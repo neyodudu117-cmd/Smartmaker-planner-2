@@ -4,6 +4,7 @@ import { apiFetch } from '../lib/api';
 
 export default function Reports() {
   const [data, setData] = useState<any>(null);
+  const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
 
   useEffect(() => {
     apiFetch('/api/dashboard')
@@ -13,21 +14,40 @@ export default function Reports() {
 
   if (!data) return <div className="flex items-center justify-center h-64">Loading...</div>;
 
-  const { summary, transactions } = data;
+  const { transactions } = data;
 
-  const incomeByCategory = transactions
+  const availableYears = Array.from(new Set(transactions.map((t: any) => t.date.substring(0, 4)))).sort().reverse() as string[];
+  if (!availableYears.includes(selectedYear) && availableYears.length > 0) {
+    // If selected year has no data but we have other years, we could auto-select, but let's just keep it.
+    // Actually, it's better to ensure the current year is in the list if it's empty.
+  }
+  const allYears = Array.from(new Set([...availableYears, new Date().getFullYear().toString()])).sort().reverse();
+
+  const filteredTransactions = transactions.filter((t: any) => t.date.startsWith(selectedYear));
+
+  const incomeByCategory = filteredTransactions
     .filter((t: any) => t.type === 'income')
     .reduce((acc: any, t: any) => {
       acc[t.category] = (acc[t.category] || 0) + t.amount;
       return acc;
     }, {});
 
-  const expensesByCategory = transactions
+  const expensesByCategory = filteredTransactions
     .filter((t: any) => t.type === 'expense')
     .reduce((acc: any, t: any) => {
       acc[t.category] = (acc[t.category] || 0) + t.amount;
       return acc;
     }, {});
+
+  const totalRevenue = filteredTransactions
+    .filter((t: any) => t.type === 'income')
+    .reduce((sum: number, t: any) => sum + t.amount, 0);
+
+  const totalExpenses = filteredTransactions
+    .filter((t: any) => t.type === 'expense')
+    .reduce((sum: number, t: any) => sum + t.amount, 0);
+
+  const netProfit = totalRevenue - totalExpenses;
 
   const handleExportCSV = () => {
     const headers = ['Date', 'Type', 'Category', 'Description', 'Amount', 'Tax Deductible'];
@@ -80,13 +100,21 @@ export default function Reports() {
             </div>
             <div>
               <h3 className="font-bold text-slate-900">Profit & Loss Statement</h3>
-              <p className="text-sm text-slate-500">Year to Date (2023)</p>
+              <p className="text-sm text-slate-500">Year to Date ({selectedYear})</p>
             </div>
           </div>
-          <button className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-2 border border-slate-200 rounded-lg bg-white">
-            <Calendar className="w-4 h-4" />
-            This Year
-          </button>
+          <div className="relative">
+            <select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+              className="appearance-none flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 pl-9 pr-8 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+            >
+              {allYears.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+            <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+          </div>
         </div>
         
         <div className="p-6 space-y-8">
@@ -102,7 +130,7 @@ export default function Reports() {
               ))}
               <div className="flex justify-between items-center text-sm font-bold pt-3 border-t border-slate-100">
                 <span className="text-slate-900">Total Income</span>
-                <span className="text-emerald-600">${summary.revenue.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="text-emerald-600">${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
               </div>
             </div>
           </div>
@@ -119,7 +147,7 @@ export default function Reports() {
               ))}
               <div className="flex justify-between items-center text-sm font-bold pt-3 border-t border-slate-100">
                 <span className="text-slate-900">Total Expenses</span>
-                <span className="text-red-600">${summary.expenses.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="text-red-600">${totalExpenses.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
               </div>
             </div>
           </div>
@@ -127,7 +155,7 @@ export default function Reports() {
           {/* Net Profit */}
           <div className="bg-slate-50 rounded-xl p-4 flex justify-between items-center border border-slate-100">
             <span className="font-bold text-slate-900 text-lg">Net Profit</span>
-            <span className="font-bold text-blue-600 text-xl">${summary.netProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+            <span className="font-bold text-blue-600 text-xl">${netProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
           </div>
         </div>
       </div>

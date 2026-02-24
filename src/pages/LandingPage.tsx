@@ -32,10 +32,10 @@ export default function LandingPage() {
             </div>
             <span className="text-xl font-bold tracking-tight">SmartMaker</span>
           </div>
-          <div className="flex items-center gap-4">
-            <Link to="/auth" className="text-sm font-medium text-slate-600 hover:text-slate-900">Log in</Link>
-            <Link to="/auth" className="text-sm font-medium bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors">
-              Go to Dashboard
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Link to="/auth" className="text-sm font-medium text-slate-600 hover:text-slate-900 whitespace-nowrap">Log in</Link>
+            <Link to="/auth" className="text-sm font-medium bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors whitespace-nowrap">
+              <span className="hidden sm:inline">Go to </span>Dashboard
             </Link>
           </div>
         </div>
