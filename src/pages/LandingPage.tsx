@@ -185,15 +185,15 @@ export default function LandingPage() {
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               className="text-3xl font-bold text-slate-900 sm:text-4xl"
             >
-              Everything you need to scale
+              Master your creator finances
             </motion.h2>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={isFeaturesInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-4 text-lg text-slate-600"
+              className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto"
             >
-              Stop using messy spreadsheets. Get clear insights into your creator business.
+              Gain total visibility into your income streams, optimize your affiliate earnings, and focus on what you do best—creating.
             </motion.p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
