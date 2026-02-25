@@ -25,30 +25,35 @@ export default function Revenue() {
     apiFetch('/api/dashboard')
       .then(res => res.json())
       .then(data => {
-        setTransactions(data.transactions.filter((t: any) => t.type === 'income'));
-      });
+        setTransactions(data.transactions?.filter((t: any) => t.type === 'income') || []);
+      })
+      .catch(err => console.error("Failed to fetch dashboard data:", err));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await apiFetch('/api/transactions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...formData,
-        type: 'income',
-        amount: parseFloat(formData.amount)
-      })
-    });
-    
-    if (res.ok) {
+    try {
+      await apiFetch('/api/transactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          type: 'income',
+          amount: parseFloat(formData.amount)
+        })
+      });
+      
       setIsAdding(false);
       // Refresh data
       apiFetch('/api/dashboard')
         .then(res => res.json())
         .then(data => {
-          setTransactions(data.transactions.filter((t: any) => t.type === 'income'));
-        });
+          setTransactions(data.transactions?.filter((t: any) => t.type === 'income') || []);
+        })
+        .catch(err => console.error("Failed to fetch dashboard data:", err));
+    } catch (err) {
+      console.error("Failed to add income:", err);
+      alert("Failed to add income. Please try again.");
     }
   };
 

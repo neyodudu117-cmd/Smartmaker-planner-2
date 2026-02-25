@@ -9,12 +9,14 @@ export default function Reports() {
   useEffect(() => {
     apiFetch('/api/dashboard')
       .then(res => res.json())
-      .then(setData);
+      .then(setData)
+      .catch(err => console.error("Failed to fetch dashboard data:", err));
   }, []);
 
   if (!data) return <div className="flex items-center justify-center h-64">Loading...</div>;
+  if (data.error) return <div className="flex items-center justify-center h-64 text-red-500">Error: {data.error}</div>;
 
-  const { transactions } = data;
+  const { transactions = [], summary = { revenue: 0, expenses: 0, netProfit: 0 } } = data;
 
   const availableYears = Array.from(new Set(transactions.map((t: any) => t.date.substring(0, 4)))).sort().reverse() as string[];
   if (!availableYears.includes(selectedYear) && availableYears.length > 0) {

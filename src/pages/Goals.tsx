@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Target, TrendingUp, Calendar } from 'lucide-react';
+import { apiFetch } from '../lib/api';
 
 export default function Goals() {
   const [goals, setGoals] = useState<any[]>([]);
@@ -12,29 +13,40 @@ export default function Goals() {
   });
 
   useEffect(() => {
-    fetch('/api/dashboard')
+    apiFetch('/api/dashboard')
       .then(res => res.json())
-      .then(data => setGoals(data.goals));
+      .then(data => {
+        setGoals(data.goals || []);
+        setTransactions(data.transactions || []);
+      })
+      .catch(err => console.error("Failed to fetch dashboard data:", err));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch('/api/goals', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: formData.type,
-        target_amount: parseFloat(formData.target_amount),
-        month: formData.month
-      })
-    });
-    
-    if (res.ok) {
+    try {
+      await apiFetch('/api/goals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: formData.type,
+          target_amount: parseFloat(formData.target_amount),
+          month: formData.month
+        })
+      });
+      
       setIsAdding(false);
       setFormData({ ...formData, target_amount: '' });
-      fetch('/api/dashboard')
+      apiFetch('/api/dashboard')
         .then(res => res.json())
-        .then(data => setGoals(data.goals));
+        .then(data => {
+          setGoals(data.goals || []);
+          setTransactions(data.transactions || []);
+        })
+        .catch(err => console.error("Failed to fetch dashboard data:", err));
+    } catch (err) {
+      console.error("Failed to add goal:", err);
+      alert("Failed to add goal. Please try again.");
     }
   };
 
@@ -138,7 +150,23 @@ export default function Goals() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {goals.map(goal => {
-          const progress = Math.min(100, (goal.current_amount / goal.target_amount) * 100);
+          // Calculate current amount dynamically based on transactions
+          let currentAmount = 0;
+          if (goal.type === 'income') {
+            currentAmount = transactions
+              .filter(t => t.type === 'income' && t.date.startsWith(goal.month))
+              .reduce((sum, t) => sum + t.amount, 0);
+          } else if (goal.type === 'profit') {
+            const income = transactions
+              .filter(t => t.type === 'income' && t.date.startsWith(goal.month))
+              .reduce((sum, t) => sum + t.amount, 0);
+            const expenses = transactions
+              .filter(t => t.type === 'expense' && t.date.startsWith(goal.month))
+              .reduce((sum, t) => sum + t.amount, 0);
+            currentAmount = income - expenses;
+          }
+
+          const progress = Math.min(100, (currentAmount / goal.target_amount) * 100);
           return (
             <div key={goal.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
               <div className="flex justify-between items-start mb-6">
@@ -162,12 +190,12 @@ export default function Goals() {
                 <div className="w-full bg-slate-100 rounded-full h-2.5">
                   <div 
                     className="bg-blue-600 h-2.5 rounded-full" 
-                    style={{ width: `${progress}%` }}
+                    style={{ width: `${Math.max(0, progress)}%` }}
                   ></div>
                 </div>
                 <div className="flex justify-between text-xs text-slate-500 pt-2">
-                  <span>${goal.current_amount.toLocaleString()}</span>
-                  <span>Target: ${goal.target_amount.toLocaleString()}</span>
+                  <span>${currentAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                  <span>Target: ${goal.target_amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 </div>
               </div>
             </div>

@@ -15,7 +15,8 @@ export default function DigitalProducts() {
   useEffect(() => {
     apiFetch('/api/dashboard')
       .then(res => res.json())
-      .then(data => setProducts(data.digitalProducts));
+      .then(data => setProducts(data.digitalProducts || []))
+      .catch(err => console.error("Failed to fetch dashboard data:", err));
   }, []);
 
   const totalSales = products.reduce((acc, p) => acc + p.sales, 0);
@@ -25,23 +26,27 @@ export default function DigitalProducts() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await apiFetch('/api/products', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: formData.name,
-        sales: parseInt(formData.sales),
-        gross_revenue: parseFloat(formData.gross_revenue),
-        platform_fee: parseFloat(formData.platform_fee)
-      })
-    });
-    
-    if (res.ok) {
+    try {
+      await apiFetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          sales: parseInt(formData.sales),
+          gross_revenue: parseFloat(formData.gross_revenue),
+          platform_fee: parseFloat(formData.platform_fee)
+        })
+      });
+      
       setIsAdding(false);
       setFormData({ name: '', sales: '', gross_revenue: '', platform_fee: '' });
       apiFetch('/api/dashboard')
         .then(res => res.json())
-        .then(data => setProducts(data.digitalProducts));
+        .then(data => setProducts(data.digitalProducts || []))
+        .catch(err => console.error("Failed to fetch dashboard data:", err));
+    } catch (err) {
+      console.error("Failed to add product:", err);
+      alert("Failed to add product. Please try again.");
     }
   };
 

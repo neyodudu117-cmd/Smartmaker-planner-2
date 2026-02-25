@@ -16,7 +16,8 @@ export default function Affiliate() {
   useEffect(() => {
     apiFetch('/api/dashboard')
       .then(res => res.json())
-      .then(data => setPrograms(data.affiliatePrograms));
+      .then(data => setPrograms(data.affiliatePrograms || []))
+      .catch(err => console.error("Failed to fetch dashboard data:", err));
   }, []);
 
   const totalClicks = programs.reduce((acc, p) => acc + p.clicks, 0);
@@ -44,23 +45,27 @@ export default function Affiliate() {
       return;
     }
 
-    const res = await apiFetch('/api/affiliate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: formData.name,
-        clicks,
-        conversions,
-        commissions
-      })
-    });
-    
-    if (res.ok) {
+    try {
+      await apiFetch('/api/affiliate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          clicks,
+          conversions,
+          commissions
+        })
+      });
+      
       setIsAdding(false);
       setFormData({ name: '', clicks: '', conversions: '', commissions: '' });
       apiFetch('/api/dashboard')
         .then(res => res.json())
-        .then(data => setPrograms(data.affiliatePrograms));
+        .then(data => setPrograms(data.affiliatePrograms || []))
+        .catch(err => console.error("Failed to fetch dashboard data:", err));
+    } catch (err) {
+      console.error("Failed to add program:", err);
+      alert("Failed to add program. Please try again.");
     }
   };
 

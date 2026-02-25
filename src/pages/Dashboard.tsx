@@ -11,6 +11,7 @@ function CountUp({ value, prefix = '', suffix = '', decimals = 0 }: { value: num
 
   useEffect(() => {
     let startTime: number | null = null;
+    let animationFrameId: number;
     const duration = 1500; // 1.5 seconds
     const startValue = 0;
 
@@ -24,11 +25,17 @@ function CountUp({ value, prefix = '', suffix = '', decimals = 0 }: { value: num
       setCount(startValue + (value - startValue) * easeProgress);
 
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        animationFrameId = requestAnimationFrame(animate);
       }
     };
 
-    requestAnimationFrame(animate);
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
   }, [value]);
 
   return <>{prefix}{count.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}{suffix}</>;
@@ -40,12 +47,14 @@ export default function Dashboard() {
   useEffect(() => {
     apiFetch('/api/dashboard')
       .then(res => res.json())
-      .then(setData);
+      .then(setData)
+      .catch(err => console.error("Failed to fetch dashboard data:", err));
   }, []);
 
   if (!data) return <div className="flex items-center justify-center h-64">Loading...</div>;
+  if (data.error) return <div className="flex items-center justify-center h-64 text-red-500">Error: {data.error}</div>;
 
-  const { summary, transactions, affiliatePrograms, digitalProducts } = data;
+  const { summary = { revenue: 0, expenses: 0, netProfit: 0, affiliateEarnings: 0 }, transactions = [], affiliatePrograms = [], digitalProducts = [] } = data;
 
   // Process data for charts
   const revenueByMonth = transactions
