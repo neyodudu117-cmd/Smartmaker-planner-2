@@ -1,25 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { BarChart3, PieChart, TrendingUp, Shield, Zap, CheckCircle2 } from 'lucide-react';
-import { motion, AnimatePresence, useInView } from 'motion/react';
-
-const PREVIEW_IMAGES = [
-  "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?q=80&w=2076&auto=format&fit=crop"
-];
+import { motion, useInView } from 'motion/react';
 
 export default function LandingPage() {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const featuresRef = useRef(null);
   const isFeaturesInView = useInView(featuresRef, { once: true, margin: "-100px" });
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % PREVIEW_IMAGES.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900">

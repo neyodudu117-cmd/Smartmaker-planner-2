@@ -151,7 +151,7 @@ export default function DigitalProducts() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-slate-500">Gross Revenue</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2">${totalGross.toLocaleString()}</h3>
+              <h3 className="text-3xl font-bold text-slate-900 mt-2">${totalGross.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
               <DollarSign className="w-5 h-5" />
@@ -162,7 +162,7 @@ export default function DigitalProducts() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-slate-500">Platform Fees</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2">${totalFees.toLocaleString()}</h3>
+              <h3 className="text-3xl font-bold text-slate-900 mt-2">${totalFees.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600">
               <Percent className="w-5 h-5" />
@@ -173,7 +173,7 @@ export default function DigitalProducts() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-slate-500">Net Revenue</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2">${totalNet.toLocaleString()}</h3>
+              <h3 className="text-3xl font-bold text-slate-900 mt-2">${totalNet.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
               <TrendingUp className="w-5 h-5" />

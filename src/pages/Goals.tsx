@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Target, TrendingUp, Calendar } from 'lucide-react';
+import { Target, TrendingUp, Calendar, CheckCircle2 } from 'lucide-react';
 import { apiFetch } from '../lib/api';
+import { motion } from 'motion/react';
 
 export default function Goals() {
   const [goals, setGoals] = useState<any[]>([]);
@@ -166,36 +167,67 @@ export default function Goals() {
             currentAmount = income - expenses;
           }
 
-          const progress = Math.min(100, (currentAmount / goal.target_amount) * 100);
+          const targetAmount = goal.target_amount || 1;
+          const progress = Math.min(100, (currentAmount / targetAmount) * 100);
+          const isCompleted = progress >= 100;
+          
+          let progressColor = 'bg-blue-600';
+          let textColor = 'text-blue-600';
+          let bgColor = 'bg-blue-50';
+          
+          if (isCompleted) {
+            progressColor = 'bg-emerald-500';
+            textColor = 'text-emerald-600';
+            bgColor = 'bg-emerald-50';
+          } else if (progress >= 75) {
+            progressColor = 'bg-amber-500';
+            textColor = 'text-amber-600';
+            bgColor = 'bg-amber-50';
+          } else if (progress < 25) {
+            progressColor = 'bg-red-500';
+            textColor = 'text-red-600';
+            bgColor = 'bg-red-50';
+          }
+
           return (
-            <div key={goal.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div key={goal.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300">
               <div className="flex justify-between items-start mb-6">
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 capitalize">{goal.type} Goal</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-slate-900 capitalize">{goal.type} Goal</h3>
+                    {isCompleted && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        Completed
+                      </span>
+                    )}
+                  </div>
                   <p className="text-sm text-slate-500 mt-1 flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
                     {goal.month}
                   </p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                <div className={`w-10 h-10 rounded-full ${bgColor} flex items-center justify-center ${textColor}`}>
                   <Target className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm font-medium">
+              <div className="space-y-3">
+                <div className="flex justify-between text-sm font-medium items-end">
                   <span className="text-slate-600">Progress</span>
-                  <span className="text-slate-900">{progress.toFixed(1)}%</span>
+                  <span className={`text-lg font-bold ${textColor}`}>{progress.toFixed(1)}%</span>
                 </div>
-                <div className="w-full bg-slate-100 rounded-full h-2.5">
-                  <div 
-                    className="bg-blue-600 h-2.5 rounded-full" 
-                    style={{ width: `${Math.max(0, progress)}%` }}
-                  ></div>
+                <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.max(0, progress)}%` }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className={`h-full rounded-full ${progressColor}`} 
+                  />
                 </div>
-                <div className="flex justify-between text-xs text-slate-500 pt-2">
-                  <span>${currentAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                  <span>Target: ${goal.target_amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <div className="flex justify-between text-xs font-medium pt-1">
+                  <span className="text-slate-700">${currentAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                  <span className="text-slate-500">Target: ${goal.target_amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 </div>
               </div>
             </div>
@@ -235,7 +267,7 @@ export default function Goals() {
               <h4 className="text-sm font-medium text-slate-700 mb-4">Historical Trend</h4>
               <div className="h-40 flex items-end gap-3">
                 {sortedMonths.slice(-6).map(month => {
-                  const maxAmount = Math.max(...sortedMonths.slice(-6).map(m => incomeByMonth[m]), forecastAmount);
+                  const maxAmount = Math.max(...sortedMonths.slice(-6).map(m => incomeByMonth[m]), forecastAmount) || 1;
                   const height = `${(incomeByMonth[month] / maxAmount) * 100}%`;
                   return (
                     <div key={month} className="flex-1 h-full flex flex-col justify-end items-center gap-2">
@@ -251,7 +283,7 @@ export default function Goals() {
                 })}
                 <div className="flex-1 h-full flex flex-col justify-end items-center gap-2">
                   <div className="w-full relative group flex-1 flex items-end">
-                    <div className="w-full bg-emerald-400 rounded-t-md transition-all opacity-70 border border-dashed border-emerald-500 hover:opacity-90" style={{ height: `${(forecastAmount / Math.max(...sortedMonths.slice(-6).map(m => incomeByMonth[m]), forecastAmount)) * 100}%` }}></div>
+                    <div className="w-full bg-emerald-400 rounded-t-md transition-all opacity-70 border border-dashed border-emerald-500 hover:opacity-90" style={{ height: `${(forecastAmount / (Math.max(...sortedMonths.slice(-6).map(m => incomeByMonth[m]), forecastAmount) || 1)) * 100}%` }}></div>
                     <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs py-1 px-2 rounded whitespace-nowrap z-10 pointer-events-none">
                       ${forecastAmount.toLocaleString(undefined, {maximumFractionDigits: 0})}
                     </div>
