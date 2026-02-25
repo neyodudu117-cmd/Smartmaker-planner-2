@@ -43,6 +43,7 @@ function CountUp({ value, prefix = '', suffix = '', decimals = 0 }: { value: num
 
 export default function Dashboard() {
   const [data, setData] = useState<any>(null);
+  const [currency, setCurrency] = useState<'USD' | 'EUR'>('USD');
 
   useEffect(() => {
     apiFetch('/api/dashboard')
@@ -56,6 +57,10 @@ export default function Dashboard() {
 
   const { summary = { revenue: 0, expenses: 0, netProfit: 0, affiliateEarnings: 0 }, transactions = [], affiliatePrograms = [], digitalProducts = [] } = data;
 
+  const exchangeRate = 0.92; // 1 USD = 0.92 EUR
+  const formatValue = (val: number) => currency === 'EUR' ? val * exchangeRate : val;
+  const currencySymbol = currency === 'EUR' ? '€' : '$';
+
   // Process data for charts
   const revenueByMonth = transactions
     .filter((t: any) => t.type === 'income')
@@ -67,7 +72,7 @@ export default function Dashboard() {
 
   const trendData = Object.keys(revenueByMonth).sort().map(month => ({
     name: month,
-    Revenue: revenueByMonth[month]
+    Revenue: formatValue(revenueByMonth[month])
   }));
 
   const incomeByCategory = transactions
@@ -79,7 +84,7 @@ export default function Dashboard() {
 
   const pieData = Object.keys(incomeByCategory).map(key => ({
     name: key,
-    value: incomeByCategory[key]
+    value: formatValue(incomeByCategory[key])
   }));
 
   const topAffiliate = [...affiliatePrograms].sort((a, b) => b.commissions - a.commissions)[0];
@@ -89,7 +94,17 @@ export default function Dashboard() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Dashboard Overview</h2>
-        <div className="text-sm text-slate-500">Last updated: Just now</div>
+        <div className="flex items-center gap-4">
+          <select 
+            value={currency} 
+            onChange={(e) => setCurrency(e.target.value as 'USD' | 'EUR')}
+            className="text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+          >
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+          </select>
+          <div className="text-sm text-slate-500">Last updated: Just now</div>
+        </div>
       </div>
 
       {/* Summary Cards */}
@@ -103,7 +118,7 @@ export default function Dashboard() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-slate-500">Total Revenue</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2"><CountUp value={summary.revenue} prefix="$" /></h3>
+              <h3 className="text-3xl font-bold text-slate-900 mt-2"><CountUp value={formatValue(summary.revenue)} prefix={currencySymbol} /></h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
               <DollarSign className="w-5 h-5" />
@@ -125,7 +140,7 @@ export default function Dashboard() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-slate-500">Total Expenses</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2"><CountUp value={summary.expenses} prefix="$" /></h3>
+              <h3 className="text-3xl font-bold text-slate-900 mt-2"><CountUp value={formatValue(summary.expenses)} prefix={currencySymbol} /></h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600">
               <Activity className="w-5 h-5" />
@@ -147,7 +162,7 @@ export default function Dashboard() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-slate-500">Net Profit</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2"><CountUp value={summary.netProfit} prefix="$" /></h3>
+              <h3 className="text-3xl font-bold text-slate-900 mt-2"><CountUp value={formatValue(summary.netProfit)} prefix={currencySymbol} /></h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
               <TrendingUp className="w-5 h-5" />
@@ -169,7 +184,7 @@ export default function Dashboard() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-slate-500">Affiliate Earnings</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2"><CountUp value={summary.affiliateEarnings} prefix="$" /></h3>
+              <h3 className="text-3xl font-bold text-slate-900 mt-2"><CountUp value={formatValue(summary.affiliateEarnings)} prefix={currencySymbol} /></h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
               <LinkIcon className="w-5 h-5" />
@@ -197,10 +212,10 @@ export default function Dashboard() {
               <LineChart data={trendData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} dx={-10} tickFormatter={(value) => `$${value}`} />
+                <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} dx={-10} tickFormatter={(value) => `${currencySymbol}${value}`} />
                 <Tooltip 
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                  formatter={(value: number) => [`$${value}`, 'Revenue']}
+                  formatter={(value: number) => [`${currencySymbol}${value}`, 'Revenue']}
                 />
                 <Line 
                   type="monotone" 
@@ -248,7 +263,7 @@ export default function Dashboard() {
                 </Pie>
                 <Tooltip 
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                  formatter={(value: number) => [`$${value.toLocaleString()}`, 'Amount']}
+                  formatter={(value: number) => [`${currencySymbol}${value.toLocaleString()}`, 'Amount']}
                 />
                 <Legend verticalAlign="bottom" height={36} iconType="circle" />
               </PieChart>
@@ -261,7 +276,7 @@ export default function Dashboard() {
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
                   <span className="text-slate-600">{entry.name}</span>
                 </div>
-                <span className="font-medium text-slate-900">${entry.value.toLocaleString()}</span>
+                <span className="font-medium text-slate-900">{currencySymbol}{entry.value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
               </div>
             ))}
           </div>
@@ -284,7 +299,7 @@ export default function Dashboard() {
                 <p className="text-sm text-slate-500 mt-1">{topAffiliate.conversions} conversions</p>
               </div>
               <div className="text-right">
-                <p className="text-xl font-bold text-blue-600">${topAffiliate.commissions.toLocaleString()}</p>
+                <p className="text-xl font-bold text-blue-600">{currencySymbol}{formatValue(topAffiliate.commissions).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
                 <p className="text-sm text-slate-500 mt-1">Earned</p>
               </div>
             </div>
@@ -308,7 +323,7 @@ export default function Dashboard() {
                 <p className="text-sm text-slate-500 mt-1">{topProduct.sales} sales</p>
               </div>
               <div className="text-right">
-                <p className="text-xl font-bold text-emerald-600">${topProduct.gross_revenue.toLocaleString()}</p>
+                <p className="text-xl font-bold text-emerald-600">{currencySymbol}{formatValue(topProduct.gross_revenue).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
                 <p className="text-sm text-slate-500 mt-1">Gross Revenue</p>
               </div>
             </div>
