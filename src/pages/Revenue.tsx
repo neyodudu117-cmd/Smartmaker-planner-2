@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Filter, Search, Calendar, Trash2, Tag, CheckSquare, Square, Pencil } from 'lucide-react';
+import { Plus, Filter, Search, Calendar, Trash2, Tag, CheckSquare, Square, Pencil, Download } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { apiFetch } from '../lib/api';
 
@@ -173,6 +173,31 @@ export default function Revenue() {
     }
   };
 
+  const handleExportCSV = () => {
+    const headers = ['Date', 'Description', 'Category', 'Amount'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredTransactions.map((t: any) => 
+        [
+          t.date, 
+          `"${t.description}"`, 
+          t.category, 
+          t.amount
+        ].join(',')
+      )
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'smartmaker_revenue.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -180,24 +205,33 @@ export default function Revenue() {
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Revenue</h2>
           <p className="text-sm text-slate-500 mt-1">Manage your income streams</p>
         </div>
-        <button 
-          onClick={() => {
-            setIsAdding(!isAdding);
-            if (!isAdding) {
-              setEditingId(null);
-              setFormData({
-                amount: '',
-                category: 'Affiliate',
-                date: new Date().toISOString().split('T')[0],
-                description: ''
-              });
-            }
-          }}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Add Income
-        </button>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handleExportCSV}
+            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"
+          >
+            <Download className="w-4 h-4" />
+            Export CSV
+          </button>
+          <button 
+            onClick={() => {
+              setIsAdding(!isAdding);
+              if (!isAdding) {
+                setEditingId(null);
+                setFormData({
+                  amount: '',
+                  category: 'Affiliate',
+                  date: new Date().toISOString().split('T')[0],
+                  description: ''
+                });
+              }
+            }}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Add Income
+          </button>
+        </div>
       </div>
 
       {isAdding && (
