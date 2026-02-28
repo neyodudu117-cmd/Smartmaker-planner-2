@@ -10,9 +10,18 @@ const __dirname = path.dirname(__filename);
 async function startServer() {
   const app = express();
   const PORT = 3000;
+  console.log("SERVER GEMINI_API_KEY:", process.env.GEMINI_API_KEY ? "EXISTS" : "UNDEFINED");
 
   // Mount API routes
   app.use(apiApp);
+
+  app.get('/api/env-check', (req, res) => {
+    res.json({
+      gemini: process.env.GEMINI_API_KEY ? 'exists' : 'undefined',
+      api: process.env.API_KEY ? 'exists' : 'undefined',
+      allKeys: Object.keys(process.env).filter(k => k.includes('API') || k.includes('GEMINI'))
+    });
+  });
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== 'production') {

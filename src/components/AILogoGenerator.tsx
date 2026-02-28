@@ -12,6 +12,7 @@ export default function AILogoGenerator({ onClose }: { onClose: () => void }) {
     setIsGenerating(true);
     setError(null);
     try {
+      console.log("API Key available:", !!process.env.GEMINI_API_KEY);
       // @ts-ignore - Vite handles process.env replacement
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       
