@@ -30,12 +30,22 @@ export default function Reports() {
       return acc;
     }, {});
 
-  const expensesByCategory = filteredTransactions
+  const EXPENSE_CATEGORIES = ['Software', 'Marketing', 'Contractors', 'Equipment', 'Other'];
+
+  const expensesByCategory = EXPENSE_CATEGORIES.reduce((acc: any, category: string) => {
+    acc[category] = 0;
+    return acc;
+  }, {});
+
+  filteredTransactions
     .filter((t: any) => t.type === 'expense')
-    .reduce((acc: any, t: any) => {
-      acc[t.category] = (acc[t.category] || 0) + t.amount;
-      return acc;
-    }, {});
+    .forEach((t: any) => {
+      if (expensesByCategory[t.category] !== undefined) {
+        expensesByCategory[t.category] += t.amount;
+      } else {
+        expensesByCategory['Other'] = (expensesByCategory['Other'] || 0) + t.amount;
+      }
+    });
 
   const totalRevenue = filteredTransactions
     .filter((t: any) => t.type === 'income')
