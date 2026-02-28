@@ -36,9 +36,9 @@ export default function Affiliate() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const clicks = parseInt(formData.clicks);
-    const conversions = parseInt(formData.conversions);
-    const commissions = parseFloat(formData.commissions);
+    const clicks = parseInt(formData.clicks) || 0;
+    const conversions = parseInt(formData.conversions) || 0;
+    const commissions = parseFloat(formData.commissions) || 0;
 
     if (clicks < 0 || conversions < 0 || commissions < 0) {
       alert('Clicks, conversions, and commissions must be non-negative numbers.');

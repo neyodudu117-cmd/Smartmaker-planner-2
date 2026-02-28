@@ -101,7 +101,7 @@ app.post('/api/transactions', async (req, res) => {
   if (error) {
     return res.status(500).json({ error: error.message });
   }
-  res.json({ id: data[0].id });
+  res.json({ id: data?.[0]?.id });
 });
 
 app.post('/api/affiliate', async (req, res) => {
@@ -117,7 +117,7 @@ app.post('/api/affiliate', async (req, res) => {
   if (error) {
     return res.status(500).json({ error: error.message });
   }
-  res.json({ id: data[0].id });
+  res.json({ id: data?.[0]?.id });
 });
 
 app.post('/api/products', async (req, res) => {
@@ -133,7 +133,7 @@ app.post('/api/products', async (req, res) => {
   if (error) {
     return res.status(500).json({ error: error.message });
   }
-  res.json({ id: data[0].id });
+  res.json({ id: data?.[0]?.id });
 });
 
 app.post('/api/goals', async (req, res) => {
@@ -149,7 +149,67 @@ app.post('/api/goals', async (req, res) => {
   if (error) {
     return res.status(500).json({ error: error.message });
   }
-  res.json({ id: data[0].id });
+  res.json({ id: data?.[0]?.id });
+});
+
+app.delete('/api/transactions/bulk', async (req, res) => {
+  const { ids } = req.body;
+  const email = req.headers['x-user-email'] as string;
+  const userId = await getUserId(email);
+  
+  if (!ids || !Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ error: 'Invalid or empty ids array' });
+  }
+
+  const { error } = await supabase
+    .from('transactions')
+    .delete()
+    .in('id', ids)
+    .eq('user_id', userId); // Ensure users only delete their own transactions
+    
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  res.json({ success: true });
+});
+
+app.put('/api/transactions/bulk-categorize', async (req, res) => {
+  const { ids, category } = req.body;
+  const email = req.headers['x-user-email'] as string;
+  const userId = await getUserId(email);
+  
+  if (!ids || !Array.isArray(ids) || ids.length === 0 || !category) {
+    return res.status(400).json({ error: 'Invalid ids array or missing category' });
+  }
+
+  const { error } = await supabase
+    .from('transactions')
+    .update({ category })
+    .in('id', ids)
+    .eq('user_id', userId); // Ensure users only update their own transactions
+    
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  res.json({ success: true });
+});
+
+app.put('/api/transactions/:id', async (req, res) => {
+  const { id } = req.params;
+  const { amount, category, date, description, is_tax_deductible } = req.body;
+  const email = req.headers['x-user-email'] as string;
+  const userId = await getUserId(email);
+  
+  const { error } = await supabase
+    .from('transactions')
+    .update({ amount, category, date, description, is_tax_deductible: is_tax_deductible ? true : false })
+    .eq('id', id)
+    .eq('user_id', userId);
+    
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  res.json({ success: true });
 });
 
 export default app;

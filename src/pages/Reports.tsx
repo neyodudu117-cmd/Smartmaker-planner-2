@@ -10,13 +10,16 @@ export default function Reports() {
     apiFetch('/api/dashboard')
       .then(res => res.json())
       .then(setData)
-      .catch(err => console.error("Failed to fetch dashboard data:", err));
+      .catch(err => {
+        console.error("Failed to fetch dashboard data:", err);
+        setData({ error: err.message });
+      });
   }, []);
 
   if (!data) return <div className="flex items-center justify-center h-64">Loading...</div>;
   if (data.error) return <div className="flex items-center justify-center h-64 text-red-500">Error: {data.error}</div>;
 
-  const { transactions = [], summary = { revenue: 0, expenses: 0, netProfit: 0 } } = data;
+  const { transactions = [] } = data;
 
   const filteredTransactions = transactions.filter((t: any) => t.date.startsWith(selectedYear));
 
@@ -64,7 +67,7 @@ export default function Reports() {
     const headers = ['Date', 'Type', 'Category', 'Description', 'Amount', 'Tax Deductible'];
     const csvContent = [
       headers.join(','),
-      ...transactions.map((t: any) => 
+      ...filteredTransactions.map((t: any) => 
         [
           t.date, 
           t.type, 

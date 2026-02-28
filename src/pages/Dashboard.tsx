@@ -49,7 +49,10 @@ export default function Dashboard() {
     apiFetch('/api/dashboard')
       .then(res => res.json())
       .then(setData)
-      .catch(err => console.error("Failed to fetch dashboard data:", err));
+      .catch(err => {
+        console.error("Failed to fetch dashboard data:", err);
+        setData({ error: err.message });
+      });
   }, []);
 
   if (!data) return <div className="flex items-center justify-center h-64">Loading...</div>;

@@ -32,9 +32,9 @@ export default function DigitalProducts() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name,
-          sales: parseInt(formData.sales),
-          gross_revenue: parseFloat(formData.gross_revenue),
-          platform_fee: parseFloat(formData.platform_fee)
+          sales: parseInt(formData.sales) || 0,
+          gross_revenue: parseFloat(formData.gross_revenue) || 0,
+          platform_fee: parseFloat(formData.platform_fee) || 0
         })
       });
       

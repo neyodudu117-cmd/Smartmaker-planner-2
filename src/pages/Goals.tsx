@@ -31,7 +31,7 @@ export default function Goals() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           type: formData.type,
-          target_amount: parseFloat(formData.target_amount),
+          target_amount: parseFloat(formData.target_amount) || 0,
           month: formData.month
         })
       });
@@ -190,16 +190,33 @@ export default function Goals() {
           }
 
           return (
-            <div key={goal.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300">
+            <motion.div 
+              key={goal.id} 
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300"
+            >
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="text-lg font-bold text-slate-900 capitalize">{goal.type} Goal</h3>
                     {isCompleted && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
+                      <motion.span 
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700"
+                      >
+                        <motion.div
+                          initial={{ scale: 0, rotate: -45 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          transition={{ delay: 0.2, type: "spring", stiffness: 500, damping: 30 }}
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                        </motion.div>
                         Completed
-                      </span>
+                      </motion.span>
                     )}
                   </div>
                   <p className="text-sm text-slate-500 mt-1 flex items-center gap-1">
@@ -217,20 +234,34 @@ export default function Goals() {
                   <span className="text-slate-600">Progress</span>
                   <span className={`text-lg font-bold ${textColor}`}>{progress.toFixed(1)}%</span>
                 </div>
-                <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden relative">
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${Math.max(0, progress)}%` }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className={`h-full rounded-full ${progressColor}`} 
-                  />
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                    className={`h-full rounded-full ${progressColor} relative overflow-hidden`} 
+                  >
+                    {isCompleted && (
+                      <motion.div
+                        className="absolute inset-0 bg-white/30"
+                        initial={{ x: '-100%' }}
+                        animate={{ x: '100%' }}
+                        transition={{ 
+                          repeat: Infinity, 
+                          duration: 2, 
+                          ease: "linear",
+                          repeatDelay: 1
+                        }}
+                      />
+                    )}
+                  </motion.div>
                 </div>
                 <div className="flex justify-between text-xs font-medium pt-1">
                   <span className="text-slate-700">${currentAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                   <span className="text-slate-500">Target: ${goal.target_amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           );
         })}
         {goals.length === 0 && (
