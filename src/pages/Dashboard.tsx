@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
-import { TrendingUp, TrendingDown, DollarSign, Activity, Link as LinkIcon } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, Activity, Link as LinkIcon, Wand2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { apiFetch } from '../lib/api';
+import AILogoGenerator from '../components/AILogoGenerator';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
 
@@ -44,6 +45,7 @@ function CountUp({ value, prefix = '', suffix = '', decimals = 0 }: { value: num
 export default function Dashboard() {
   const [data, setData] = useState<any>(null);
   const [currency, setCurrency] = useState<'USD' | 'EUR'>('USD');
+  const [showLogoGenerator, setShowLogoGenerator] = useState(false);
 
   useEffect(() => {
     apiFetch('/api/dashboard')
@@ -95,9 +97,17 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
+      {showLogoGenerator && <AILogoGenerator onClose={() => setShowLogoGenerator(false)} />}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Dashboard Overview</h2>
         <div className="flex items-center gap-4">
+          <button
+            onClick={() => setShowLogoGenerator(true)}
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all shadow-sm"
+          >
+            <Wand2 className="w-4 h-4" />
+            Generate AI Logo
+          </button>
           <select 
             value={currency} 
             onChange={(e) => setCurrency(e.target.value as 'USD' | 'EUR')}
