@@ -36,6 +36,16 @@ export default function AIInsights({ data }: AIInsightsProps) {
       
       const getApiKey = () => {
         try {
+          // @ts-ignore
+          if (import.meta.env.VITE_GEMINI_API_KEY && import.meta.env.VITE_GEMINI_API_KEY !== 'undefined') {
+            // @ts-ignore
+            return import.meta.env.VITE_GEMINI_API_KEY;
+          }
+        } catch (e) {
+          // Ignore import.meta errors
+        }
+
+        try {
           if (typeof process !== 'undefined' && process.env) {
             const env = process.env;
             const key = env['API_KEY'];
@@ -46,16 +56,6 @@ export default function AIInsights({ data }: AIInsightsProps) {
           }
         } catch (e) {
           // Ignore process errors
-        }
-        
-        try {
-          // @ts-ignore
-          if (import.meta.env.VITE_GEMINI_API_KEY && import.meta.env.VITE_GEMINI_API_KEY !== 'undefined') {
-            // @ts-ignore
-            return import.meta.env.VITE_GEMINI_API_KEY;
-          }
-        } catch (e) {
-          // Ignore import.meta errors
         }
         
         return '';

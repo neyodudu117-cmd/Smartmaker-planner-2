@@ -46,6 +46,16 @@ export default function AILogoGenerator({ onClose }: { onClose: () => void }) {
       // Try to get the API key from various sources safely
       const getApiKey = () => {
         try {
+          // @ts-ignore
+          if (import.meta.env.VITE_GEMINI_API_KEY && import.meta.env.VITE_GEMINI_API_KEY !== 'undefined') {
+            // @ts-ignore
+            return import.meta.env.VITE_GEMINI_API_KEY;
+          }
+        } catch (e) {
+          // Ignore import.meta errors
+        }
+
+        try {
           if (typeof process !== 'undefined' && process.env) {
             const env = process.env;
             const apiKey = env['API_KEY'];
@@ -56,16 +66,6 @@ export default function AILogoGenerator({ onClose }: { onClose: () => void }) {
           }
         } catch (e) {
           // Ignore process errors
-        }
-        
-        try {
-          // @ts-ignore
-          if (import.meta.env.VITE_GEMINI_API_KEY && import.meta.env.VITE_GEMINI_API_KEY !== 'undefined') {
-            // @ts-ignore
-            return import.meta.env.VITE_GEMINI_API_KEY;
-          }
-        } catch (e) {
-          // Ignore import.meta errors
         }
         
         return '';
