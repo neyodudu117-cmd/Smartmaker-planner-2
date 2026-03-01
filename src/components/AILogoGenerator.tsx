@@ -41,21 +41,44 @@ export default function AILogoGenerator({ onClose }: { onClose: () => void }) {
     setIsGenerating(true);
     setError(null);
     try {
-      let apiKey = '';
-      try {
-        // @ts-ignore
-        apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
-      } catch (e) {
-        // @ts-ignore
-        apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      }
+      let apiKey: string | undefined = '';
       
-      if (!apiKey || apiKey === 'undefined') {
+      // Try to get the API key from various sources safely
+      const getApiKey = () => {
+        try {
+          if (typeof process !== 'undefined' && process.env) {
+            const env = process.env;
+            const apiKey = env['API_KEY'];
+            const geminiKey = env['GEMINI_API_KEY'];
+            
+            if (apiKey && apiKey !== 'undefined') return apiKey;
+            if (geminiKey && geminiKey !== 'undefined') return geminiKey;
+          }
+        } catch (e) {
+          // Ignore process errors
+        }
+        
+        try {
+          // @ts-ignore
+          if (import.meta.env.VITE_GEMINI_API_KEY && import.meta.env.VITE_GEMINI_API_KEY !== 'undefined') {
+            // @ts-ignore
+            return import.meta.env.VITE_GEMINI_API_KEY;
+          }
+        } catch (e) {
+          // Ignore import.meta errors
+        }
+        
+        return '';
+      };
+
+      apiKey = getApiKey();
+      
+      if (!apiKey || typeof apiKey !== 'string' || apiKey.trim() === '') {
         throw new Error("API Key is missing. Please select an API key using the button above.");
       }
 
       // @ts-ignore
-      const ai = new GoogleGenAI({ apiKey });
+      const ai = new GoogleGenAI({ apiKey: apiKey.trim() });
       
       const response = await ai.models.generateContent({
         model: 'gemini-3.1-flash-image-preview',

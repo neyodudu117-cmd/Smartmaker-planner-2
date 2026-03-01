@@ -20,20 +20,42 @@ export default function RevenueForecast({ transactions }: RevenueForecastProps) 
         await window.aistudio.openSelectKey();
       }
 
-      let apiKey = '';
-      try {
-        // @ts-ignore
-        apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
-      } catch (e) {
-        // @ts-ignore
-        apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      }
+      let apiKey: string | undefined = '';
+      
+      const getApiKey = () => {
+        try {
+          if (typeof process !== 'undefined' && process.env) {
+            const env = process.env;
+            const key = env['API_KEY'];
+            const geminiKey = env['GEMINI_API_KEY'];
+            
+            if (key && key !== 'undefined') return key;
+            if (geminiKey && geminiKey !== 'undefined') return geminiKey;
+          }
+        } catch (e) {
+          // Ignore process errors
+        }
+        
+        try {
+          // @ts-ignore
+          if (import.meta.env.VITE_GEMINI_API_KEY && import.meta.env.VITE_GEMINI_API_KEY !== 'undefined') {
+            // @ts-ignore
+            return import.meta.env.VITE_GEMINI_API_KEY;
+          }
+        } catch (e) {
+          // Ignore import.meta errors
+        }
+        
+        return '';
+      };
 
-      if (!apiKey || apiKey === 'undefined') {
+      apiKey = getApiKey();
+
+      if (!apiKey || typeof apiKey !== 'string' || apiKey.trim() === '') {
         throw new Error("API Key missing");
       }
 
-      const ai = new GoogleGenAI({ apiKey });
+      const ai = new GoogleGenAI({ apiKey: apiKey.trim() });
       
       const revenueData = transactions
         .filter(t => t.type === 'income')
