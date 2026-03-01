@@ -79,7 +79,7 @@ export default function Goals() {
   const [formData, setFormData] = useState({
     type: 'income',
     target_amount: '',
-    month: new Date().toISOString().substring(0, 7)
+    month: new Date().toISOString().substring(0, 10)
   });
 
   useEffect(() => {
@@ -190,9 +190,9 @@ export default function Goals() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Month</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Due Date</label>
               <input 
-                type="month" 
+                type="date" 
                 required
                 value={formData.month}
                 onChange={e => setFormData({...formData, month: e.target.value})}
@@ -221,17 +221,18 @@ export default function Goals() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {goals.map(goal => {
           // Calculate current amount dynamically based on transactions
+          const goalMonth = goal.month?.substring(0, 7) || '';
           let currentAmount = 0;
           if (goal.type === 'income') {
             currentAmount = transactions
-              .filter(t => t.type === 'income' && t.date.startsWith(goal.month))
+              .filter(t => t.type === 'income' && t.date.startsWith(goalMonth))
               .reduce((sum, t) => sum + t.amount, 0);
           } else if (goal.type === 'profit') {
             const income = transactions
-              .filter(t => t.type === 'income' && t.date.startsWith(goal.month))
+              .filter(t => t.type === 'income' && t.date.startsWith(goalMonth))
               .reduce((sum, t) => sum + t.amount, 0);
             const expenses = transactions
-              .filter(t => t.type === 'expense' && t.date.startsWith(goal.month))
+              .filter(t => t.type === 'expense' && t.date.startsWith(goalMonth))
               .reduce((sum, t) => sum + t.amount, 0);
             currentAmount = income - expenses;
           }
@@ -283,7 +284,7 @@ export default function Goals() {
                       </span>
                       <p className="text-xs font-medium text-slate-400 flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
-                        {goal.month}
+                        Due: {goal.month ? new Date(goal.month + (goal.month.length === 7 ? '-01T00:00:00' : 'T00:00:00')).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'No date'}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">

@@ -41,8 +41,19 @@ export default function AILogoGenerator({ onClose }: { onClose: () => void }) {
     setIsGenerating(true);
     setError(null);
     try {
-      // @ts-ignore - Vite handles process.env replacement
-      const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+      let apiKey = '';
+      try {
+        // @ts-ignore
+        apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
+      } catch (e) {
+        // @ts-ignore
+        apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      }
+      
+      if (!apiKey || apiKey === 'undefined') {
+        throw new Error("API Key is missing. Please select an API key using the button above.");
+      }
+
       // @ts-ignore
       const ai = new GoogleGenAI({ apiKey });
       
