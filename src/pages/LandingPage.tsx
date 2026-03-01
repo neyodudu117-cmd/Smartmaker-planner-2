@@ -235,6 +235,6 @@ export default function LandingPage() {
           <p>© 2025 SmartMaker. All rights reserved.</p>
         </div>
       </footer>
-    </div>
+    </main>
   );
 }
