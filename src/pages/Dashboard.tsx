@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
-import { TrendingUp, TrendingDown, DollarSign, Activity, Link as LinkIcon, Wand2 } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, Activity, Link as LinkIcon, Wand2, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import { apiFetch } from '../lib/api';
 import AILogoGenerator from '../components/AILogoGenerator';
+import AIInsights from '../components/AIInsights';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
 
@@ -244,6 +245,16 @@ export default function Dashboard() {
               </LineChart>
             </ResponsiveContainer>
           </div>
+        </motion.div>
+
+        {/* AI Insights - NEW */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.55, ease: "easeOut" }}
+          className="lg:col-span-1"
+        >
+          <AIInsights data={data} />
         </motion.div>
 
         {/* Income Breakdown */}

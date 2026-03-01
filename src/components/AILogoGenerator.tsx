@@ -12,9 +12,9 @@ export default function AILogoGenerator({ onClose }: { onClose: () => void }) {
     setIsGenerating(true);
     setError(null);
     try {
-      console.log("API Key available:", !!process.env.GEMINI_API_KEY);
+      console.log("API Key available:", !!import.meta.env.VITE_GEMINI_API_KEY, "cache bust 2");
       // @ts-ignore - Vite handles process.env replacement
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
       
       const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash-image',

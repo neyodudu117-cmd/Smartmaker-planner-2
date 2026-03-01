@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Filter, Search, Calendar, Trash2, Tag, CheckSquare, Square, Pencil, Download } from 'lucide-react';
+import { Plus, Filter, Search, Calendar, Trash2, Tag, CheckSquare, Square, Pencil, Download, Sparkles } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { apiFetch } from '../lib/api';
+import RevenueForecast from '../components/RevenueForecast';
 
 export default function Revenue() {
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -95,8 +96,8 @@ export default function Revenue() {
     const matchesSearch = t.description.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           t.category.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = filters.category ? t.category === filters.category : true;
-    const matchesStartDate = filters.startDate ? new Date(t.date) >= new Date(filters.startDate) : true;
-    const matchesEndDate = filters.endDate ? new Date(t.date) <= new Date(filters.endDate) : true;
+    const matchesStartDate = filters.startDate ? t.date >= filters.startDate : true;
+    const matchesEndDate = filters.endDate ? t.date <= filters.endDate : true;
     
     return matchesSearch && matchesCategory && matchesStartDate && matchesEndDate;
   });
@@ -307,18 +308,23 @@ export default function Revenue() {
       )}
 
       {sortedMonths.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {sortedMonths.slice(0, 4).map(month => (
-            <div key={month} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-500 mb-1">{format(parseISO(month + '-01'), 'MMMM yyyy')}</p>
-                <h3 className="text-2xl font-bold text-slate-900">${monthlySummary[month].toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {sortedMonths.slice(0, 4).map(month => (
+              <div key={month} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-500 mb-1">{format(parseISO(month + '-01'), 'MMMM yyyy')}</p>
+                  <h3 className="text-2xl font-bold text-slate-900">${monthlySummary[month].toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                  <Calendar className="w-5 h-5" />
+                </div>
               </div>
-              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-                <Calendar className="w-5 h-5" />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          <div className="lg:col-span-1">
+            <RevenueForecast transactions={transactions} />
+          </div>
         </div>
       )}
 
@@ -344,47 +350,106 @@ export default function Revenue() {
         </div>
         
         {showFilters && (
-          <div className="p-4 border-b border-slate-100 bg-white grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-xs font-medium text-slate-500 mb-1">Start Date</label>
-              <input 
-                type="date" 
-                value={filters.startDate}
-                onChange={(e) => setFilters({...filters, startDate: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+          <div className="p-4 border-b border-slate-100 bg-white space-y-4">
+            <div className="flex flex-wrap gap-2">
+              <div className="w-full flex items-center justify-between mb-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Quick Ranges</span>
+                <button 
+                  onClick={() => setFilters({ startDate: '', endDate: '', category: '' })}
+                  className="text-[10px] font-bold text-blue-600 uppercase tracking-widest hover:text-blue-700"
+                >
+                  Reset All
+                </button>
+              </div>
+              {[
+                { label: 'Today', getValue: () => {
+                  const d = new Date().toISOString().split('T')[0];
+                  return { start: d, end: d };
+                }},
+                { label: 'This Week', getValue: () => {
+                  const now = new Date();
+                  const day = now.getDay();
+                  const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+                  const first = new Date(new Date().setDate(diff)).toISOString().split('T')[0];
+                  const last = new Date(new Date().setDate(diff + 6)).toISOString().split('T')[0];
+                  return { start: first, end: last };
+                }},
+                { label: 'This Month', getValue: () => {
+                  const now = new Date();
+                  const first = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+                  const last = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+                  return { start: first, end: last };
+                }},
+                { label: 'Last Month', getValue: () => {
+                  const now = new Date();
+                  const first = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString().split('T')[0];
+                  const last = new Date(now.getFullYear(), now.getMonth(), 0).toISOString().split('T')[0];
+                  return { start: first, end: last };
+                }},
+                { label: 'This Year', getValue: () => {
+                  const now = new Date();
+                  const first = `${now.getFullYear()}-01-01`;
+                  const last = `${now.getFullYear()}-12-31`;
+                  return { start: first, end: last };
+                }}
+              ].map(range => (
+                <button
+                  key={range.label}
+                  onClick={() => {
+                    const { start, end } = range.getValue();
+                    setFilters({ ...filters, startDate: start, endDate: end });
+                  }}
+                  className={`text-xs px-3 py-1.5 rounded-lg border transition-all font-medium ${
+                    filters.startDate === range.getValue().start && filters.endDate === range.getValue().end
+                    ? 'bg-blue-600 border-blue-600 text-white shadow-sm'
+                    : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50'
+                  }`}
+                >
+                  {range.label}
+                </button>
+              ))}
             </div>
-            <div>
-              <label className="block text-xs font-medium text-slate-500 mb-1">End Date</label>
-              <input 
-                type="date" 
-                value={filters.endDate}
-                onChange={(e) => setFilters({...filters, endDate: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-slate-500 mb-1">Category</label>
-              <select 
-                value={filters.category}
-                onChange={(e) => setFilters({...filters, category: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">All Categories</option>
-                <option value="Affiliate">Affiliate</option>
-                <option value="Digital Product">Digital Product</option>
-                <option value="Sponsorship">Sponsorship</option>
-                <option value="Consulting">Consulting</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div className="md:col-span-3 flex justify-end">
-              <button 
-                onClick={() => setFilters({ startDate: '', endDate: '', category: '' })}
-                className="text-sm text-slate-500 hover:text-slate-700 font-medium"
-              >
-                Clear Filters
-              </button>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+              <div>
+                <label className="block text-xs font-medium text-slate-500 mb-1.5">Start Date</label>
+                <div className="relative">
+                  <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input 
+                    type="date" 
+                    value={filters.startDate}
+                    onChange={(e) => setFilters({...filters, startDate: e.target.value})}
+                    className="w-full border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/30"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 mb-1.5">End Date</label>
+                <div className="relative">
+                  <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input 
+                    type="date" 
+                    value={filters.endDate}
+                    onChange={(e) => setFilters({...filters, endDate: e.target.value})}
+                    className="w-full border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/30"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 mb-1.5">Category</label>
+                <select 
+                  value={filters.category}
+                  onChange={(e) => setFilters({...filters, category: e.target.value})}
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/30"
+                >
+                  <option value="">All Categories</option>
+                  <option value="Affiliate">Affiliate</option>
+                  <option value="Digital Product">Digital Product</option>
+                  <option value="Sponsorship">Sponsorship</option>
+                  <option value="Consulting">Consulting</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
             </div>
           </div>
         )}
@@ -491,10 +556,10 @@ export default function Revenue() {
                         e.stopPropagation();
                         handleEdit(t);
                       }}
-                      className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                      title="Edit transaction"
+                      className="flex items-center gap-1.5 ml-auto px-3 py-1.5 text-xs font-bold text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-100"
                     >
-                      <Pencil className="w-4 h-4" />
+                      <Pencil className="w-3.5 h-3.5" />
+                      Edit
                     </button>
                   </td>
                 </tr>

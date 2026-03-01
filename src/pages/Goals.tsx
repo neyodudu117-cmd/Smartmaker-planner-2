@@ -1,7 +1,76 @@
 import React, { useState, useEffect } from 'react';
-import { Target, TrendingUp, Calendar, CheckCircle2 } from 'lucide-react';
+import { Target, TrendingUp, Calendar, CheckCircle2, ArrowUpRight, Trophy, Flag } from 'lucide-react';
 import { apiFetch } from '../lib/api';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
+
+const Confetti = () => (
+  <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    {[...Array(12)].map((_, i) => (
+      <motion.div
+        key={i}
+        initial={{ 
+          top: "100%", 
+          left: `${Math.random() * 100}%`,
+          scale: Math.random() * 0.5 + 0.5,
+          rotate: 0
+        }}
+        animate={{ 
+          top: "-10%",
+          left: `${Math.random() * 100}%`,
+          rotate: 360
+        }}
+        transition={{ 
+          duration: Math.random() * 2 + 2,
+          repeat: Infinity,
+          ease: "linear",
+          delay: Math.random() * 2
+        }}
+        className={`absolute w-2 h-2 rounded-sm ${
+          ['bg-emerald-400', 'bg-yellow-400', 'bg-blue-400', 'bg-pink-400'][i % 4]
+        }`}
+      />
+    ))}
+  </div>
+);
+
+const CircularProgress = ({ progress, color, size = 64, strokeWidth = 6 }: { progress: number, color: string, size?: number, strokeWidth?: number }) => {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const offset = circumference - (Math.min(100, progress) / 100) * circumference;
+
+  return (
+    <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="transform -rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          className="text-slate-100"
+        />
+        <motion.circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          strokeDasharray={circumference}
+          initial={{ strokeDashoffset: circumference }}
+          animate={{ strokeDashoffset: offset }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className={color}
+          strokeLinecap="round"
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-[10px] font-bold text-slate-900">{Math.round(progress)}%</span>
+      </div>
+    </div>
+  );
+};
 
 export default function Goals() {
   const [goals, setGoals] = useState<any[]>([]);
@@ -192,73 +261,108 @@ export default function Goals() {
           return (
             <motion.div 
               key={goal.id} 
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className={`relative bg-white rounded-3xl shadow-sm border overflow-hidden group hover:shadow-xl transition-all duration-500 ${
+                isCompleted 
+                ? 'border-emerald-200 shadow-emerald-500/10 ring-1 ring-emerald-100' 
+                : 'border-slate-100 hover:shadow-blue-500/5'
+              }`}
             >
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-bold text-slate-900 capitalize">{goal.type} Goal</h3>
-                    {isCompleted && (
-                      <motion.span 
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700"
-                      >
+              {isCompleted && <Confetti />}
+              <div className="p-6 relative z-10">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                        isCompleted ? 'bg-emerald-50 text-emerald-600' :
+                        goal.type === 'income' ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'
+                      }`}>
+                        {goal.type}
+                      </span>
+                      <p className="text-xs font-medium text-slate-400 flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        {goal.month}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xl font-bold text-slate-900 tracking-tight">
+                        {goal.type === 'income' ? 'Revenue Target' : 'Profit Target'}
+                      </h3>
+                      {isCompleted && (
                         <motion.div
-                          initial={{ scale: 0, rotate: -45 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={{ delay: 0.2, type: "spring", stiffness: 500, damping: 30 }}
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: "spring", stiffness: 500, damping: 15, delay: 0.5 }}
                         >
-                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <Trophy className="w-5 h-5 text-yellow-500 fill-yellow-500/20" />
                         </motion.div>
-                        Completed
-                      </motion.span>
+                      )}
+                    </div>
+                  </div>
+                  <CircularProgress 
+                    progress={progress} 
+                    color={isCompleted ? 'text-emerald-500' : progress >= 75 ? 'text-blue-500' : 'text-slate-400'} 
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-end justify-between">
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Current Status</p>
+                      <div className="flex items-baseline gap-1">
+                        <span className={`text-2xl font-black transition-colors duration-500 ${isCompleted ? 'text-emerald-600' : 'text-slate-900'}`}>
+                          ${currentAmount.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}
+                        </span>
+                        <span className="text-xs font-medium text-slate-400">/ ${goal.target_amount.toLocaleString()}</span>
+                      </div>
+                    </div>
+                    {isCompleted ? (
+                      <motion.div 
+                        initial={{ rotate: -15, scale: 0.8 }}
+                        animate={{ rotate: 0, scale: 1 }}
+                        className="bg-emerald-500 text-white px-3 py-1.5 rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-1.5"
+                      >
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span className="text-xs font-bold uppercase tracking-wider">Achieved</span>
+                      </motion.div>
+                    ) : (
+                      <div className="text-right">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Remaining</p>
+                        <p className="text-sm font-bold text-slate-900">
+                          ${Math.max(0, targetAmount - currentAmount).toLocaleString(undefined, {maximumFractionDigits: 0})}
+                        </p>
+                      </div>
                     )}
                   </div>
-                  <p className="text-sm text-slate-500 mt-1 flex items-center gap-1">
-                    <Calendar className="w-3 h-3" />
-                    {goal.month}
-                  </p>
-                </div>
-                <div className={`w-10 h-10 rounded-full ${bgColor} flex items-center justify-center ${textColor}`}>
-                  <Target className="w-5 h-5" />
-                </div>
-              </div>
 
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm font-medium items-end">
-                  <span className="text-slate-600">Progress</span>
-                  <span className={`text-lg font-bold ${textColor}`}>{progress.toFixed(1)}%</span>
-                </div>
-                <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden relative">
-                  <motion.div 
-                    initial={{ width: 0 }}
-                    animate={{ width: `${Math.max(0, progress)}%` }}
-                    transition={{ duration: 1.2, ease: "easeOut" }}
-                    className={`h-full rounded-full ${progressColor} relative overflow-hidden`} 
-                  >
-                    {isCompleted && (
-                      <motion.div
-                        className="absolute inset-0 bg-white/30"
-                        initial={{ x: '-100%' }}
-                        animate={{ x: '100%' }}
-                        transition={{ 
-                          repeat: Infinity, 
-                          duration: 2, 
-                          ease: "linear",
-                          repeatDelay: 1
-                        }}
-                      />
-                    )}
-                  </motion.div>
-                </div>
-                <div className="flex justify-between text-xs font-medium pt-1">
-                  <span className="text-slate-700">${currentAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                  <span className="text-slate-500">Target: ${goal.target_amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                  <div className="relative h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progress}%` }}
+                      transition={{ duration: 1.5, ease: "circOut" }}
+                      className={`absolute inset-y-0 left-0 rounded-full ${
+                        isCompleted ? 'bg-emerald-500' : 'bg-blue-600'
+                      }`}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+                    </motion.div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-50">
+                    <div className="flex items-center gap-1.5">
+                      <div className={`w-1.5 h-1.5 rounded-full ${isCompleted ? 'bg-emerald-500 animate-pulse' : 'bg-blue-500'}`} />
+                      <span className={`text-[10px] font-bold uppercase tracking-wider ${isCompleted ? 'text-emerald-600' : 'text-slate-500'}`}>
+                        {isCompleted ? 'Goal Celebrated' : 'In Progress'}
+                      </span>
+                    </div>
+                    <button className={`text-[10px] font-bold uppercase tracking-widest transition-colors flex items-center gap-1 ${
+                      isCompleted ? 'text-emerald-600 hover:text-emerald-700' : 'text-blue-600 hover:text-blue-700'
+                    }`}>
+                      Details <ArrowUpRight className="w-3 h-3" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </motion.div>
