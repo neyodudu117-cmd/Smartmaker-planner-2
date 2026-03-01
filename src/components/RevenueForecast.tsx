@@ -20,36 +20,7 @@ export default function RevenueForecast({ transactions }: RevenueForecastProps) 
         await window.aistudio.openSelectKey();
       }
 
-      let apiKey: string | undefined = '';
-      
-      const getApiKey = () => {
-        try {
-          // @ts-ignore
-          if (import.meta.env.VITE_GEMINI_API_KEY && import.meta.env.VITE_GEMINI_API_KEY !== 'undefined') {
-            // @ts-ignore
-            return import.meta.env.VITE_GEMINI_API_KEY;
-          }
-        } catch (e) {
-          // Ignore import.meta errors
-        }
-
-        try {
-          if (typeof process !== 'undefined' && process.env) {
-            const env = process.env;
-            const key = env['API_KEY'];
-            const geminiKey = env['GEMINI_API_KEY'];
-            
-            if (key && key !== 'undefined') return key;
-            if (geminiKey && geminiKey !== 'undefined') return geminiKey;
-          }
-        } catch (e) {
-          // Ignore process errors
-        }
-        
-        return '';
-      };
-
-      apiKey = getApiKey();
+      const apiKey = process.env.GEMINI_API_KEY;
 
       if (!apiKey || typeof apiKey !== 'string' || apiKey.trim() === '') {
         throw new Error("API Key missing");

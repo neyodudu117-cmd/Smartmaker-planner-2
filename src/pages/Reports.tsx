@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, FileText, Calendar, PieChart } from 'lucide-react';
+import { Download, FileText, Calendar, PieChart, TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
 import { apiFetch } from '../lib/api';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
@@ -58,6 +58,29 @@ export default function Reports() {
 
   const netProfit = totalRevenue - totalExpenses;
 
+  // Calculate previous year data for comparison
+  const previousYear = (parseInt(selectedYear) - 1).toString();
+  const prevYearTransactions = transactions.filter((t: any) => t.date.startsWith(previousYear));
+  
+  const prevTotalRevenue = prevYearTransactions
+    .filter((t: any) => t.type === 'income')
+    .reduce((sum: number, t: any) => sum + t.amount, 0);
+    
+  const prevTotalExpenses = prevYearTransactions
+    .filter((t: any) => t.type === 'expense')
+    .reduce((sum: number, t: any) => sum + t.amount, 0);
+    
+  const prevNetProfit = prevTotalRevenue - prevTotalExpenses;
+
+  const calculatePercentageChange = (current: number, previous: number) => {
+    if (previous === 0) return current > 0 ? 100 : 0;
+    return ((current - previous) / Math.abs(previous)) * 100;
+  };
+
+  const revenueChange = calculatePercentageChange(totalRevenue, prevTotalRevenue);
+  const expensesChange = calculatePercentageChange(totalExpenses, prevTotalExpenses);
+  const profitChange = calculatePercentageChange(netProfit, prevNetProfit);
+
   // Calculate monthly summaries
   const monthlySummaries = filteredTransactions.reduce((acc: any, t: any) => {
     const month = t.date.substring(0, 7); // YYYY-MM
@@ -108,13 +131,97 @@ export default function Reports() {
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Financial Reports</h2>
           <p className="text-sm text-slate-500 mt-1">Profit & Loss statements and exports</p>
         </div>
-        <button 
-          onClick={handleExportCSV}
-          className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"
-        >
-          <Download className="w-4 h-4" />
-          Export CSV
-        </button>
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <input
+              type="date"
+              value={`${selectedYear}-01-01`}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val) {
+                  setSelectedYear(val.substring(0, 4));
+                }
+              }}
+              className="appearance-none flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 pl-9 pr-4 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+            />
+            <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+          </div>
+          <button 
+            onClick={handleExportCSV}
+            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"
+          >
+            <Download className="w-4 h-4" />
+            Export CSV
+          </button>
+        </div>
+      </div>
+
+      {/* Financial Performance Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Revenue</p>
+              <h3 className="text-2xl font-bold text-slate-900 mt-1">${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+              <DollarSign className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="flex items-center gap-2 text-sm">
+            {revenueChange !== 0 && (
+              <span className={`flex items-center font-bold ${revenueChange > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                {revenueChange > 0 ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
+                {Math.abs(revenueChange).toFixed(1)}%
+              </span>
+            )}
+            <span className="text-slate-500">vs last year</span>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Expenses</p>
+              <h3 className="text-2xl font-bold text-slate-900 mt-1">${totalExpenses.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+              <TrendingDown className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="flex items-center gap-2 text-sm">
+            {expensesChange !== 0 && (
+              <span className={`flex items-center font-bold ${expensesChange < 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                {expensesChange > 0 ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
+                {Math.abs(expensesChange).toFixed(1)}%
+              </span>
+            )}
+            <span className="text-slate-500">vs last year</span>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Net Profit</p>
+              <h3 className={`text-2xl font-bold mt-1 ${netProfit >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+                ${netProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}
+              </h3>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+              <TrendingUp className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="flex items-center gap-2 text-sm">
+            {profitChange !== 0 && (
+              <span className={`flex items-center font-bold ${profitChange > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                {profitChange > 0 ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
+                {Math.abs(profitChange).toFixed(1)}%
+              </span>
+            )}
+            <span className="text-slate-500">vs last year</span>
+          </div>
+        </div>
       </div>
 
       {/* Monthly Summaries */}
@@ -171,20 +278,6 @@ export default function Reports() {
               <h3 className="font-bold text-slate-900">Profit & Loss Statement</h3>
               <p className="text-sm text-slate-500">Year to Date ({selectedYear})</p>
             </div>
-          </div>
-          <div className="relative">
-            <input
-              type="date"
-              value={`${selectedYear}-01-01`}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val) {
-                  setSelectedYear(val.substring(0, 4));
-                }
-              }}
-              className="appearance-none flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 pl-9 pr-4 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-            />
-            <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
           </div>
         </div>
         
