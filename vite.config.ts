@@ -17,7 +17,8 @@ export default defineConfig(({mode}) => {
     define: {
       'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY),
       'process.env': {
-        GEMINI_API_KEY: process.env.GEMINI_API_KEY
+        GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+        API_KEY: process.env.API_KEY
       }
     },
     resolve: {

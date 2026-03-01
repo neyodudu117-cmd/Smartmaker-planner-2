@@ -42,7 +42,9 @@ export default function AILogoGenerator({ onClose }: { onClose: () => void }) {
     setError(null);
     try {
       // @ts-ignore - Vite handles process.env replacement
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+      // @ts-ignore
+      const ai = new GoogleGenAI({ apiKey });
       
       const response = await ai.models.generateContent({
         model: 'gemini-3.1-flash-image-preview',

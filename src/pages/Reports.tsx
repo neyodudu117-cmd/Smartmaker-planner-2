@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Download, FileText, Calendar } from 'lucide-react';
+import { Download, FileText, Calendar, PieChart } from 'lucide-react';
 import { apiFetch } from '../lib/api';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 export default function Reports() {
   const [data, setData] = useState<any>(null);
@@ -226,6 +227,64 @@ export default function Reports() {
           <div className="bg-slate-50 rounded-xl p-4 flex justify-between items-center border border-slate-100">
             <span className="font-bold text-slate-900 text-lg">Net Profit</span>
             <span className="font-bold text-blue-600 text-xl">${netProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Expense Breakdown Chart */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+            <PieChart className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-900">Expense Breakdown by Category</h3>
+            <p className="text-sm text-slate-500">Yearly distribution for {selectedYear}</p>
+          </div>
+        </div>
+        <div className="p-6">
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={Object.entries(expensesByCategory).map(([name, value]) => ({ name, value }))}
+                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis 
+                  dataKey="name" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fill: '#64748b', fontSize: 12 }}
+                  angle={-45}
+                  textAnchor="end"
+                />
+                <YAxis 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fill: '#64748b', fontSize: 12 }}
+                  tickFormatter={(value) => `$${value}`}
+                />
+                <Tooltip 
+                  cursor={{ fill: '#f8fafc' }}
+                  contentStyle={{ 
+                    borderRadius: '12px', 
+                    border: 'none', 
+                    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+                    fontSize: '12px',
+                    fontWeight: 'bold'
+                  }}
+                  formatter={(value: number) => [`$${value.toLocaleString()}`, 'Total Expense']}
+                />
+                <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={40}>
+                  {Object.entries(expensesByCategory).map((_, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#64748b'][index % 6]} 
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>

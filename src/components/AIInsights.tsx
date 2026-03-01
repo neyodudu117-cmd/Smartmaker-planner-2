@@ -27,7 +27,7 @@ export default function AIInsights({ data }: AIInsightsProps) {
     setError(null);
     try {
       // @ts-ignore - Vite handles process.env replacement
-      const apiKey = process.env.GEMINI_API_KEY;
+      const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
       if (!apiKey) {
         throw new Error("Gemini API Key is not configured.");
       }
