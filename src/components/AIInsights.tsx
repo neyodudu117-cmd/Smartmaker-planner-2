@@ -26,6 +26,12 @@ export default function AIInsights({ data }: AIInsightsProps) {
     setIsGenerating(true);
     setError(null);
     try {
+      // @ts-ignore
+      if (window.aistudio && !(await window.aistudio.hasSelectedApiKey())) {
+        // @ts-ignore
+        await window.aistudio.openSelectKey();
+      }
+
       // @ts-ignore - Vite handles process.env replacement
       const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
       if (!apiKey) {
