@@ -14,7 +14,8 @@ export default function RevenueForecast({ transactions }: RevenueForecastProps) 
   const generateForecast = async () => {
     setIsGenerating(true);
     try {
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      // @ts-ignore - Vite handles process.env replacement
+      const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) throw new Error("API Key missing");
 
       const ai = new GoogleGenAI({ apiKey });

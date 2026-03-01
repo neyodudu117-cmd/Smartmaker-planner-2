@@ -337,31 +337,41 @@ export default function Goals() {
                     )}
                   </div>
 
-                  <div className="relative h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="relative h-4 bg-slate-100 rounded-full overflow-hidden shadow-inner">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${progress}%` }}
-                      transition={{ duration: 1.5, ease: "circOut" }}
-                      className={`absolute inset-y-0 left-0 rounded-full ${
-                        isCompleted ? 'bg-emerald-500' : 'bg-blue-600'
+                      transition={{ duration: 1.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                      className={`absolute inset-y-0 left-0 rounded-full shadow-lg ${
+                        isCompleted 
+                        ? 'bg-gradient-to-r from-emerald-400 to-emerald-600' 
+                        : 'bg-gradient-to-r from-blue-500 to-blue-700'
                       }`}
                     >
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+                      {/* Animated Shimmer Effect */}
+                      <motion.div 
+                        animate={{ x: ['-100%', '100%'] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                      />
+                      
+                      {/* Progress Glow */}
+                      <div className={`absolute -right-1 top-1/2 -translate-y-1/2 w-4 h-4 blur-md rounded-full ${
+                        isCompleted ? 'bg-emerald-400' : 'bg-blue-400'
+                      }`} />
                     </motion.div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-slate-50">
+                  <div className="flex items-center justify-between pt-2">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      {Math.round(progress)}% Complete
+                    </p>
                     <div className="flex items-center gap-1.5">
                       <div className={`w-1.5 h-1.5 rounded-full ${isCompleted ? 'bg-emerald-500 animate-pulse' : 'bg-blue-500'}`} />
                       <span className={`text-[10px] font-bold uppercase tracking-wider ${isCompleted ? 'text-emerald-600' : 'text-slate-500'}`}>
                         {isCompleted ? 'Goal Celebrated' : 'In Progress'}
                       </span>
                     </div>
-                    <button className={`text-[10px] font-bold uppercase tracking-widest transition-colors flex items-center gap-1 ${
-                      isCompleted ? 'text-emerald-600 hover:text-emerald-700' : 'text-blue-600 hover:text-blue-700'
-                    }`}>
-                      Details <ArrowUpRight className="w-3 h-3" />
-                    </button>
                   </div>
                 </div>
               </div>

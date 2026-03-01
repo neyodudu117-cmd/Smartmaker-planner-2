@@ -526,7 +526,7 @@ export default function Revenue() {
                 <th className="px-6 py-4 font-medium">Description</th>
                 <th className="px-6 py-4 font-medium">Category</th>
                 <th className="px-6 py-4 font-medium text-right">Amount</th>
-                <th className="px-6 py-4 font-medium w-16"></th>
+                <th className="px-6 py-4 font-medium text-right w-32">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -551,16 +551,38 @@ export default function Revenue() {
                     +${t.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEdit(t);
-                      }}
-                      className="flex items-center gap-1.5 ml-auto px-3 py-1.5 text-xs font-bold text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-100"
-                    >
-                      <Pencil className="w-3.5 h-3.5" />
-                      Edit
-                    </button>
+                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEdit(t);
+                        }}
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-100"
+                        title="Edit Transaction"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (confirm('Are you sure you want to delete this transaction?')) {
+                            apiFetch(`/api/transactions/${t.id}`, { method: 'DELETE' })
+                              .then(() => {
+                                // Refresh data
+                                apiFetch('/api/dashboard')
+                                  .then(res => res.json())
+                                  .then(data => {
+                                    setTransactions(data.transactions?.filter((t: any) => t.type === 'income') || []);
+                                  });
+                              });
+                          }
+                        }}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
+                        title="Delete Transaction"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
