@@ -14,12 +14,6 @@ export default function RevenueForecast({ transactions }: RevenueForecastProps) 
   const generateForecast = async () => {
     setIsGenerating(true);
     try {
-      // @ts-ignore
-      if (window.aistudio && !(await window.aistudio.hasSelectedApiKey())) {
-        // @ts-ignore
-        await window.aistudio.openSelectKey();
-      }
-
       const apiKey = process.env.GEMINI_API_KEY;
 
       if (!apiKey || typeof apiKey !== 'string' || apiKey.trim() === '') {

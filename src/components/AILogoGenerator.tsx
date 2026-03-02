@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GoogleGenAI } from '@google/genai';
 import { Wand2, Loader2, Download, X } from 'lucide-react';
 
@@ -9,7 +9,7 @@ export default function AILogoGenerator({ onClose }: { onClose: () => void }) {
   const [error, setError] = useState<string | null>(null);
   const [hasApiKey, setHasApiKey] = useState<boolean | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const checkApiKey = async () => {
       // @ts-ignore - window.aistudio is global
       if (window.aistudio?.hasSelectedApiKey) {
