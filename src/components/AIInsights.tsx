@@ -26,13 +26,8 @@ export default function AIInsights({ data }: AIInsightsProps) {
     setIsGenerating(true);
     setError(null);
     try {
-      const apiKey = process.env.GEMINI_API_KEY;
-
-      if (!apiKey || typeof apiKey !== 'string' || apiKey.trim() === '') {
-        throw new Error("Gemini API Key is not configured.");
-      }
-
-      const ai = new GoogleGenAI({ apiKey: apiKey.trim() });
+      // @ts-ignore
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       
       const prompt = `
         As a financial expert for digital entrepreneurs, analyze the following financial data for "SmartMaker Hub" and provide 3-4 concise, actionable insights.

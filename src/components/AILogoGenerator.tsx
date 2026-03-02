@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { GoogleGenAI } from '@google/genai';
 import { Wand2, Loader2, Download, X } from 'lucide-react';
 
@@ -7,58 +7,22 @@ export default function AILogoGenerator({ onClose }: { onClose: () => void }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [hasApiKey, setHasApiKey] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const checkApiKey = async () => {
-      // @ts-ignore - window.aistudio is global
-      if (window.aistudio?.hasSelectedApiKey) {
-        // @ts-ignore
-        const selected = await window.aistudio.hasSelectedApiKey();
-        setHasApiKey(selected);
-      } else {
-        // Fallback for environments where aistudio is not available
-        setHasApiKey(true);
-      }
-    };
-    checkApiKey();
-  }, []);
-
-  const handleOpenKeySelector = async () => {
-    // @ts-ignore
-    if (window.aistudio?.openSelectKey) {
-      // @ts-ignore
-      await window.aistudio.openSelectKey();
-      setHasApiKey(true); // Assume success as per guidelines
-    }
-  };
 
   const handleGenerate = async () => {
-    if (!hasApiKey) {
-      setError("Please select an API key first.");
-      return;
-    }
     setIsGenerating(true);
     setError(null);
     try {
-      const apiKey = process.env.GEMINI_API_KEY;
-      
-      if (!apiKey || typeof apiKey !== 'string' || apiKey.trim() === '') {
-        throw new Error("API Key is missing. Please select an API key using the button above.");
-      }
-
       // @ts-ignore
-      const ai = new GoogleGenAI({ apiKey: apiKey.trim() });
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       
       const response = await ai.models.generateContent({
-        model: 'gemini-3.1-flash-image-preview',
+        model: 'gemini-2.5-flash-image',
         contents: {
           parts: [{ text: prompt }]
         },
         config: {
           imageConfig: {
-            aspectRatio: "1:1",
-            imageSize: "1K"
+            aspectRatio: "1:1"
           }
         }
       });
@@ -111,31 +75,9 @@ export default function AILogoGenerator({ onClose }: { onClose: () => void }) {
             />
           </div>
 
-          {!hasApiKey && (
-            <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 space-y-3">
-              <p className="text-xs text-amber-800 font-medium">
-                To use the high-quality Nana Banana model, you must select a paid API key from a Google Cloud project.
-              </p>
-              <button 
-                onClick={handleOpenKeySelector}
-                className="w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2 rounded-lg transition-colors shadow-sm"
-              >
-                Select API Key
-              </button>
-              <a 
-                href="https://ai.google.dev/gemini-api/docs/billing" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="block text-center text-[10px] text-amber-600 hover:underline font-medium"
-              >
-                Learn about billing
-              </a>
-            </div>
-          )}
-
           <button 
             onClick={handleGenerate}
-            disabled={isGenerating || !prompt.trim() || !hasApiKey}
+            disabled={isGenerating || !prompt.trim()}
             className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-medium py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors"
           >
             {isGenerating ? (

@@ -14,13 +14,8 @@ export default function RevenueForecast({ transactions }: RevenueForecastProps) 
   const generateForecast = async () => {
     setIsGenerating(true);
     try {
-      const apiKey = process.env.GEMINI_API_KEY;
-
-      if (!apiKey || typeof apiKey !== 'string' || apiKey.trim() === '') {
-        throw new Error("API Key missing");
-      }
-
-      const ai = new GoogleGenAI({ apiKey: apiKey.trim() });
+      // @ts-ignore
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       
       const revenueData = transactions
         .filter(t => t.type === 'income')
