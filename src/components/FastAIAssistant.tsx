@@ -71,13 +71,8 @@ export default function FastAIAssistant() {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       
       const response = await ai.models.generateContentStream({
-        model: 'gemini-2.5-flash-lite-latest',
-        contents: [
-          {
-            role: 'user',
-            parts: [{ text: userMessage }]
-          }
-        ],
+        model: 'gemini-3-flash-preview',
+        contents: userMessage,
         config: {
           systemInstruction: `You are a helpful financial assistant for digital entrepreneurs. Keep your responses concise, professional, and actionable. 
           The user is currently on the "${window.location.pathname}" page. 
@@ -134,7 +129,7 @@ export default function FastAIAssistant() {
                     <h3 className="text-sm font-bold">Fast AI Assistant</h3>
                     <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
                   </div>
-                  <p className="text-[10px] text-blue-100 font-medium uppercase tracking-wider">Powered by Gemini 2.5 Lite</p>
+                  <p className="text-[10px] text-blue-100 font-medium uppercase tracking-wider">Powered by Gemini 3 Flash</p>
                 </div>
               </div>
               <div className="flex items-center gap-1">

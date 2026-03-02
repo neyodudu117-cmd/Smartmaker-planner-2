@@ -54,7 +54,7 @@ export default function AIInsights({ data }: AIInsightsProps) {
       `;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash-lite-latest',
+        model: 'gemini-3-flash-preview',
         contents: prompt,
         config: {
           responseMimeType: 'application/json'
