@@ -54,8 +54,8 @@ export default function DigitalProducts() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Digital Products</h2>
-          <p className="text-sm text-slate-500 mt-1">Track sales, gross revenue, and platform fees</p>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Digital Products</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Track sales, gross revenue, and platform fees</p>
         </div>
         <button 
           onClick={() => setIsAdding(!isAdding)}
@@ -67,52 +67,52 @@ export default function DigitalProducts() {
       </div>
 
       {isAdding && (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
-          <h3 className="text-lg font-bold text-slate-900 mb-4">Add Digital Product</h3>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-6 transition-colors duration-200">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Add Digital Product</h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Product Name</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Product Name</label>
               <input 
                 type="text" 
                 required
                 value={formData.name}
                 onChange={e => setFormData({...formData, name: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                 placeholder="e.g. Creator Ebook"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Total Sales</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Total Sales</label>
               <input 
                 type="number" 
                 required
                 value={formData.sales}
                 onChange={e => setFormData({...formData, sales: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                 placeholder="0"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Gross Revenue ($)</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Gross Revenue ($)</label>
               <input 
                 type="number" 
                 required
                 step="0.01"
                 value={formData.gross_revenue}
                 onChange={e => setFormData({...formData, gross_revenue: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                 placeholder="0.00"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Platform Fees ($)</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Platform Fees ($)</label>
               <input 
                 type="number" 
                 required
                 step="0.01"
                 value={formData.platform_fee}
                 onChange={e => setFormData({...formData, platform_fee: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                 placeholder="0.00"
               />
             </div>
@@ -120,7 +120,7 @@ export default function DigitalProducts() {
               <button 
                 type="button" 
                 onClick={() => setIsAdding(false)}
-                className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
               >
                 Cancel
               </button>
@@ -136,59 +136,59 @@ export default function DigitalProducts() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-colors duration-200">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-medium text-slate-500">Total Sales</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2">{totalSales.toLocaleString()}</h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Sales</p>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{totalSales.toLocaleString()}</h3>
             </div>
-            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+            <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <ShoppingBag className="w-5 h-5" />
             </div>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-colors duration-200">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-medium text-slate-500">Gross Revenue</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2">${totalGross.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Gross Revenue</p>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">${totalGross.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
             </div>
-            <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+            <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <DollarSign className="w-5 h-5" />
             </div>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-colors duration-200">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-medium text-slate-500">Platform Fees</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2">${totalFees.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Platform Fees</p>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">${totalFees.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
             </div>
-            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+            <div className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
               <Percent className="w-5 h-5" />
             </div>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-colors duration-200">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-medium text-slate-500">Net Revenue</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2">${totalNet.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Net Revenue</p>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">${totalNet.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
             </div>
-            <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+            <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <TrendingUp className="w-5 h-5" />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-          <h3 className="font-semibold text-slate-900">Product Performance Ranking</h3>
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden transition-colors duration-200">
+        <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 transition-colors duration-200">
+          <h3 className="font-semibold text-slate-900 dark:text-white">Product Performance Ranking</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
+            <thead className="text-xs text-slate-500 dark:text-slate-400 uppercase bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 transition-colors duration-200">
               <tr>
                 <th className="px-6 py-4 font-medium">Rank</th>
                 <th className="px-6 py-4 font-medium">Product Name</th>
@@ -198,21 +198,21 @@ export default function DigitalProducts() {
                 <th className="px-6 py-4 font-medium text-right">Net Revenue</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {[...products].sort((a, b) => b.sales - a.sales).map((p, index) => {
                 const net = p.gross_revenue - p.platform_fee;
                 return (
-                  <tr key={p.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-slate-500">#{index + 1}</td>
-                    <td className="px-6 py-4 font-medium text-slate-900">{p.name}</td>
-                    <td className="px-6 py-4 text-right text-slate-600">{p.sales.toLocaleString()}</td>
-                    <td className="px-6 py-4 text-right text-slate-600">
+                  <tr key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
+                    <td className="px-6 py-4 font-medium text-slate-500 dark:text-slate-400 transition-colors">#{index + 1}</td>
+                    <td className="px-6 py-4 font-medium text-slate-900 dark:text-white transition-colors">{p.name}</td>
+                    <td className="px-6 py-4 text-right text-slate-600 dark:text-slate-400 transition-colors">{p.sales.toLocaleString()}</td>
+                    <td className="px-6 py-4 text-right text-slate-600 dark:text-slate-400 transition-colors">
                       ${p.gross_revenue.toLocaleString(undefined, {minimumFractionDigits: 2})}
                     </td>
-                    <td className="px-6 py-4 text-right text-red-500">
+                    <td className="px-6 py-4 text-right text-red-500 dark:text-red-400 transition-colors">
                       -${p.platform_fee.toLocaleString(undefined, {minimumFractionDigits: 2})}
                     </td>
-                    <td className="px-6 py-4 text-right font-medium text-emerald-600">
+                    <td className="px-6 py-4 text-right font-medium text-emerald-600 dark:text-emerald-400 transition-colors">
                       ${net.toLocaleString(undefined, {minimumFractionDigits: 2})}
                     </td>
                   </tr>
@@ -220,7 +220,7 @@ export default function DigitalProducts() {
               })}
               {products.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
+                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500 dark:text-slate-400 transition-colors">
                     No digital products found.
                   </td>
                 </tr>

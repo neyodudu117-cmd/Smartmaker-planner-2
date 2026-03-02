@@ -151,8 +151,8 @@ export default function Goals() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Goals & Forecasting</h2>
-          <p className="text-sm text-slate-500 mt-1">Track your progress and predict future income</p>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Goals & Forecasting</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Track your progress and predict future income</p>
         </div>
         <button 
           onClick={() => setIsAdding(!isAdding)}
@@ -164,46 +164,46 @@ export default function Goals() {
       </div>
 
       {isAdding && (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
-          <h3 className="text-lg font-bold text-slate-900 mb-4">Set New Goal</h3>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-6 transition-colors duration-200">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Set New Goal</h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Goal Type</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Goal Type</label>
               <select 
                 value={formData.type}
                 onChange={e => setFormData({...formData, type: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
               >
                 <option value="income">Income</option>
                 <option value="profit">Profit</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Target Amount ($)</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Target Amount ($)</label>
               <input 
                 type="number" 
                 required
                 value={formData.target_amount}
                 onChange={e => setFormData({...formData, target_amount: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                 placeholder="0.00"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Due Date</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Due Date</label>
               <input 
                 type="date" 
                 required
                 value={formData.month}
                 onChange={e => setFormData({...formData, month: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
               />
             </div>
             <div className="md:col-span-3 flex justify-end gap-2 mt-2">
               <button 
                 type="button" 
                 onClick={() => setIsAdding(false)}
-                className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
               >
                 Cancel
               </button>
@@ -265,10 +265,10 @@ export default function Goals() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
-              className={`relative bg-white rounded-3xl shadow-sm border overflow-hidden group hover:shadow-xl transition-all duration-500 ${
+              className={`relative bg-white dark:bg-slate-900 rounded-3xl shadow-sm border overflow-hidden group hover:shadow-xl transition-all duration-500 ${
                 isCompleted 
-                ? 'border-emerald-200 shadow-emerald-500/10 ring-1 ring-emerald-100' 
-                : 'border-slate-100 hover:shadow-blue-500/5'
+                ? 'border-emerald-200 dark:border-emerald-800 shadow-emerald-500/10 ring-1 ring-emerald-100 dark:ring-emerald-900' 
+                : 'border-slate-100 dark:border-slate-800 hover:shadow-blue-500/5'
               }`}
             >
               {isCompleted && <Confetti />}
@@ -277,8 +277,8 @@ export default function Goals() {
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
-                        isCompleted ? 'bg-emerald-50 text-emerald-600' :
-                        goal.type === 'income' ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'
+                        isCompleted ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400' :
+                        goal.type === 'income' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400'
                       }`}>
                         {goal.type}
                       </span>
@@ -288,7 +288,7 @@ export default function Goals() {
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-xl font-bold text-slate-900 tracking-tight">
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
                         {goal.type === 'income' ? 'Revenue Target' : 'Profit Target'}
                       </h3>
                       {isCompleted && (
@@ -313,7 +313,7 @@ export default function Goals() {
                     <div className="space-y-1">
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Current Status</p>
                       <div className="flex items-baseline gap-1">
-                        <span className={`text-2xl font-black transition-colors duration-500 ${isCompleted ? 'text-emerald-600' : 'text-slate-900'}`}>
+                        <span className={`text-2xl font-black transition-colors duration-500 ${isCompleted ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-white'}`}>
                           ${currentAmount.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}
                         </span>
                         <span className="text-xs font-medium text-slate-400">/ ${goal.target_amount.toLocaleString()}</span>
@@ -331,14 +331,14 @@ export default function Goals() {
                     ) : (
                       <div className="text-right">
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Remaining</p>
-                        <p className="text-sm font-bold text-slate-900">
+                        <p className="text-sm font-bold text-slate-900 dark:text-white">
                           ${Math.max(0, targetAmount - currentAmount).toLocaleString(undefined, {maximumFractionDigits: 0})}
                         </p>
                       </div>
                     )}
                   </div>
 
-                  <div className="relative h-4 bg-slate-100 rounded-full overflow-hidden shadow-inner">
+                  <div className="relative h-4 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner transition-colors duration-200">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${progress}%` }}
@@ -369,7 +369,7 @@ export default function Goals() {
                     </p>
                     <div className="flex items-center gap-1.5">
                       <div className={`w-1.5 h-1.5 rounded-full ${isCompleted ? 'bg-emerald-500 animate-pulse' : 'bg-blue-500'}`} />
-                      <span className={`text-[10px] font-bold uppercase tracking-wider ${isCompleted ? 'text-emerald-600' : 'text-slate-500'}`}>
+                      <span className={`text-[10px] font-bold uppercase tracking-wider ${isCompleted ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}>
                         {isCompleted ? 'Goal Celebrated' : 'In Progress'}
                       </span>
                     </div>
@@ -380,37 +380,37 @@ export default function Goals() {
           );
         })}
         {goals.length === 0 && (
-          <div className="col-span-2 bg-white p-8 rounded-2xl shadow-sm border border-slate-100 text-center">
-            <Target className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-slate-900">No Goals Set</h3>
-            <p className="text-sm text-slate-500 mt-2">Set income or profit goals to track your progress.</p>
+          <div className="col-span-2 bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 text-center transition-colors duration-200">
+            <Target className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">No Goals Set</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">Set income or profit goals to track your progress.</p>
           </div>
         )}
       </div>
 
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-colors duration-200">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+          <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
             <TrendingUp className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-slate-900">Income Forecast</h3>
-            <p className="text-sm text-slate-500">Based on historical data</p>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Income Forecast</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Based on historical data</p>
           </div>
         </div>
         
         {hasEnoughData ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-1 bg-slate-50 p-6 rounded-xl border border-slate-100 flex flex-col justify-center">
-              <p className="text-sm font-medium text-slate-500 mb-1">Next Month Forecast</p>
-              <h4 className="text-3xl font-bold text-slate-900">${forecastAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</h4>
-              <div className={`mt-2 flex items-center gap-1 text-sm font-medium ${forecastGrowth >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+            <div className="md:col-span-1 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col justify-center transition-colors duration-200">
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Next Month Forecast</p>
+              <h4 className="text-3xl font-bold text-slate-900 dark:text-white">${forecastAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</h4>
+              <div className={`mt-2 flex items-center gap-1 text-sm font-medium ${forecastGrowth >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                 <TrendingUp className={`w-4 h-4 ${forecastGrowth < 0 ? 'rotate-180' : ''}`} />
                 {Math.abs(forecastGrowth).toFixed(1)}% vs last month
               </div>
             </div>
             <div className="md:col-span-2">
-              <h4 className="text-sm font-medium text-slate-700 mb-4">Historical Trend</h4>
+              <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-4">Historical Trend</h4>
               <div className="h-40 flex items-end gap-3">
                 {sortedMonths.slice(-6).map(month => {
                   const maxAmount = Math.max(...sortedMonths.slice(-6).map(m => incomeByMonth[m]), forecastAmount) || 1;
@@ -423,7 +423,7 @@ export default function Goals() {
                           ${incomeByMonth[month].toLocaleString(undefined, {maximumFractionDigits: 0})}
                         </div>
                       </div>
-                      <span className="text-xs text-slate-500">{month.substring(5, 7)}/{month.substring(2, 4)}</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400">{month.substring(5, 7)}/{month.substring(2, 4)}</span>
                     </div>
                   );
                 })}
@@ -434,16 +434,16 @@ export default function Goals() {
                       ${forecastAmount.toLocaleString(undefined, {maximumFractionDigits: 0})}
                     </div>
                   </div>
-                  <span className="text-xs font-medium text-emerald-600">Next</span>
+                  <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">Next</span>
                 </div>
               </div>
             </div>
           </div>
         ) : (
-          <div className="p-8 border-2 border-dashed border-slate-200 rounded-xl text-center">
-            <TrendingUp className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-            <h4 className="text-slate-900 font-medium">Forecasting Model Training</h4>
-            <p className="text-sm text-slate-500 mt-2 max-w-md mx-auto">
+          <div className="p-8 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl text-center transition-colors duration-200">
+            <TrendingUp className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+            <h4 className="text-slate-900 dark:text-white font-medium">Forecasting Model Training</h4>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-md mx-auto">
               We need at least 3 months of historical data to generate accurate forecasts. Keep logging your income and expenses!
             </p>
           </div>

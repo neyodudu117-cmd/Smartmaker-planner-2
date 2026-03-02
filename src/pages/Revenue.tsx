@@ -203,13 +203,13 @@ export default function Revenue() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Revenue</h2>
-          <p className="text-sm text-slate-500 mt-1">Manage your income streams</p>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Revenue</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Manage your income streams</p>
         </div>
         <div className="flex items-center gap-3">
           <button 
             onClick={handleExportCSV}
-            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"
+            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"
           >
             <Download className="w-4 h-4" />
             Export CSV
@@ -236,26 +236,26 @@ export default function Revenue() {
       </div>
 
       {isAdding && (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
-          <h3 className="text-lg font-bold text-slate-900 mb-4">{editingId ? 'Edit Income Entry' : 'New Income Entry'}</h3>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-6 transition-colors duration-200">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{editingId ? 'Edit Income Entry' : 'New Income Entry'}</h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Amount ($)</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Amount ($)</label>
               <input 
                 type="number" 
                 required
                 value={formData.amount}
                 onChange={e => setFormData({...formData, amount: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                 placeholder="0.00"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Category</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
               <select 
                 value={formData.category}
                 onChange={e => setFormData({...formData, category: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
               >
                 <option>Affiliate</option>
                 <option>Digital Product</option>
@@ -265,23 +265,23 @@ export default function Revenue() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Date</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date</label>
               <input 
                 type="date" 
                 required
                 value={formData.date}
                 onChange={e => setFormData({...formData, date: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
               <input 
                 type="text" 
                 required
                 value={formData.description}
                 onChange={e => setFormData({...formData, description: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                 placeholder="e.g. Amazon Associates Oct"
               />
             </div>
@@ -292,7 +292,7 @@ export default function Revenue() {
                   setIsAdding(false);
                   setEditingId(null);
                 }}
-                className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
               >
                 Cancel
               </button>
@@ -311,12 +311,12 @@ export default function Revenue() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
             {sortedMonths.slice(0, 4).map(month => (
-              <div key={month} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+              <div key={month} className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-between transition-colors duration-200">
                 <div>
-                  <p className="text-sm font-medium text-slate-500 mb-1">{format(parseISO(month + '-01'), 'MMMM yyyy')}</p>
-                  <h3 className="text-2xl font-bold text-slate-900">${monthlySummary[month].toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">{format(parseISO(month + '-01'), 'MMMM yyyy')}</p>
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white">${monthlySummary[month].toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
                   <Calendar className="w-5 h-5" />
                 </div>
               </div>
@@ -328,8 +328,8 @@ export default function Revenue() {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden transition-colors duration-200">
+        <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50 dark:bg-slate-800/50 transition-colors duration-200">
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <div className="relative flex-1 sm:flex-none">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -338,13 +338,13 @@ export default function Revenue() {
                 placeholder="Search description or category..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-80 bg-white shadow-sm"
+                className="pl-9 pr-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm transition-colors"
               />
             </div>
             {searchQuery && (
               <button 
                 onClick={() => setSearchQuery('')}
-                className="text-xs font-medium text-slate-500 hover:text-slate-700"
+                className="text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
               >
                 Clear
               </button>
@@ -352,7 +352,7 @@ export default function Revenue() {
           </div>
           <button 
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 text-sm font-medium px-4 py-2 border rounded-lg transition-colors shadow-sm ${showFilters ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900'}`}
+            className={`flex items-center gap-2 text-sm font-medium px-4 py-2 border rounded-lg transition-colors shadow-sm ${showFilters ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}`}
           >
             <Filter className="w-4 h-4" />
             Advanced Filters
@@ -360,13 +360,13 @@ export default function Revenue() {
         </div>
         
         {showFilters && (
-          <div className="p-4 border-b border-slate-100 bg-white space-y-4">
+          <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-4 transition-colors duration-200">
             <div className="flex flex-wrap gap-2">
               <div className="w-full flex items-center justify-between mb-1">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Quick Ranges</span>
                 <button 
                   onClick={() => setFilters({ startDate: '', endDate: '', category: '' })}
-                  className="text-[10px] font-bold text-blue-600 uppercase tracking-widest hover:text-blue-700"
+                  className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
                 >
                   Reset All
                 </button>
@@ -412,7 +412,7 @@ export default function Revenue() {
                   className={`text-xs px-3 py-1.5 rounded-lg border transition-all font-medium ${
                     filters.startDate === range.getValue().start && filters.endDate === range.getValue().end
                     ? 'bg-blue-600 border-blue-600 text-white shadow-sm'
-                    : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50'
+                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-300 dark:hover:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20'
                   }`}
                 >
                   {range.label}
@@ -422,35 +422,35 @@ export default function Revenue() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
               <div>
-                <label className="block text-xs font-medium text-slate-500 mb-1.5">Start Date</label>
+                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">Start Date</label>
                 <div className="relative">
                   <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input 
                     type="date" 
                     value={filters.startDate}
                     onChange={(e) => setFilters({...filters, startDate: e.target.value})}
-                    className="w-full border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/30"
+                    className="w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/30 dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-500 mb-1.5">End Date</label>
+                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">End Date</label>
                 <div className="relative">
                   <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input 
                     type="date" 
                     value={filters.endDate}
                     onChange={(e) => setFilters({...filters, endDate: e.target.value})}
-                    className="w-full border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/30"
+                    className="w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/30 dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-500 mb-1.5">Category</label>
+                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">Category</label>
                 <select 
                   value={filters.category}
                   onChange={(e) => setFilters({...filters, category: e.target.value})}
-                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/30"
+                  className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/30 dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                 >
                   <option value="">All Categories</option>
                   <option value="Affiliate">Affiliate</option>
@@ -465,8 +465,8 @@ export default function Revenue() {
         )}
 
         {selectedIds.length > 0 && (
-          <div className="bg-blue-50 border-b border-blue-100 p-3 px-4 flex items-center justify-between">
-            <div className="text-sm font-medium text-blue-800">
+          <div className="bg-blue-50 dark:bg-blue-900/20 border-b border-blue-100 dark:border-blue-800 p-3 px-4 flex items-center justify-between transition-colors duration-200">
+            <div className="text-sm font-medium text-blue-800 dark:text-blue-300">
               {selectedIds.length} transaction{selectedIds.length > 1 ? 's' : ''} selected
             </div>
             <div className="flex items-center gap-2">
@@ -475,7 +475,7 @@ export default function Revenue() {
                   <select 
                     value={bulkCategory}
                     onChange={(e) => setBulkCategory(e.target.value)}
-                    className="border border-blue-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-700"
+                    className="border border-blue-200 dark:border-blue-700 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
                   >
                     <option value="">Select Category...</option>
                     <option value="Affiliate">Affiliate</option>
@@ -493,7 +493,7 @@ export default function Revenue() {
                   </button>
                   <button 
                     onClick={() => { setIsBulkCategorizing(false); setBulkCategory(''); }}
-                    className="px-3 py-1.5 text-blue-700 text-sm font-medium hover:bg-blue-100 rounded-lg transition-colors"
+                    className="px-3 py-1.5 text-blue-700 dark:text-blue-400 text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-lg transition-colors"
                   >
                     Cancel
                   </button>
@@ -502,14 +502,14 @@ export default function Revenue() {
                 <>
                   <button 
                     onClick={() => setIsBulkCategorizing(true)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-100 rounded-lg transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-lg transition-colors"
                   >
                     <Tag className="w-4 h-4" />
                     Categorize
                   </button>
                   <button 
                     onClick={handleBulkDelete}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                     Delete
@@ -522,12 +522,12 @@ export default function Revenue() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
+            <thead className="text-xs text-slate-500 dark:text-slate-400 uppercase bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 transition-colors duration-200">
               <tr>
                 <th className="px-6 py-4 font-medium w-10">
                   <input 
                     type="checkbox" 
-                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    className="rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
                     checked={filteredTransactions.length > 0 && selectedIds.length === filteredTransactions.length}
                     onChange={handleSelectAll}
                   />
@@ -539,25 +539,25 @@ export default function Revenue() {
                 <th className="px-6 py-4 font-medium text-right w-32">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {filteredTransactions.map((t) => (
-                <tr key={t.id} className={`hover:bg-slate-50 transition-all duration-200 cursor-pointer relative z-0 hover:z-10 group ${selectedIds.includes(t.id) ? 'bg-blue-50/50' : ''}`}>
+                <tr key={t.id} className={`hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200 cursor-pointer relative z-0 hover:z-10 group ${selectedIds.includes(t.id) ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''}`}>
                   <td className="px-6 py-4">
                     <input 
                       type="checkbox" 
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      className="rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
                       checked={selectedIds.includes(t.id)}
                       onChange={() => handleSelectOne(t.id)}
                     />
                   </td>
-                  <td className="px-6 py-4 text-slate-600 group-hover:text-slate-900 transition-colors">{t.date}</td>
-                  <td className="px-6 py-4 font-medium text-slate-900">{t.description}</td>
+                  <td className="px-6 py-4 text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-slate-200 transition-colors">{t.date}</td>
+                  <td className="px-6 py-4 font-medium text-slate-900 dark:text-white transition-colors">{t.description}</td>
                   <td className="px-6 py-4">
-                    <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 group-hover:bg-blue-100 transition-colors">
+                    <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 transition-colors">
                       {t.category}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right font-medium text-emerald-600">
+                  <td className="px-6 py-4 text-right font-medium text-emerald-600 dark:text-emerald-400 transition-colors">
                     +${t.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -567,7 +567,7 @@ export default function Revenue() {
                           e.stopPropagation();
                           handleEdit(t);
                         }}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-100"
+                        className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors border border-transparent hover:border-blue-100 dark:hover:border-blue-800"
                         title="Edit Transaction"
                       >
                         <Pencil className="w-4 h-4" />
@@ -587,7 +587,7 @@ export default function Revenue() {
                               });
                           }
                         }}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
+                        className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border border-transparent hover:border-red-100 dark:hover:border-red-800"
                         title="Delete Transaction"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -598,7 +598,7 @@ export default function Revenue() {
               ))}
               {filteredTransactions.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
+                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500 dark:text-slate-400 transition-colors">
                     No income transactions found.
                   </td>
                 </tr>

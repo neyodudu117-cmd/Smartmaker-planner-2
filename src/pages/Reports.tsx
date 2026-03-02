@@ -128,8 +128,8 @@ export default function Reports() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Financial Reports</h2>
-          <p className="text-sm text-slate-500 mt-1">Profit & Loss statements and exports</p>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Financial Reports</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Profit & Loss statements and exports</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="relative">
@@ -142,13 +142,13 @@ export default function Reports() {
                   setSelectedYear(val.substring(0, 4));
                 }
               }}
-              className="appearance-none flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 pl-9 pr-4 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+              className="appearance-none flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white pl-9 pr-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer transition-colors"
             />
-            <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+            <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 pointer-events-none" />
           </div>
           <button 
             onClick={handleExportCSV}
-            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"
+            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"
           >
             <Download className="w-4 h-4" />
             Export CSV
@@ -158,81 +158,81 @@ export default function Reports() {
 
       {/* Financial Performance Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-colors duration-200">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Revenue</p>
-              <h3 className="text-2xl font-bold text-slate-900 mt-1">${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Revenue</p>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
             </div>
-            <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+            <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <DollarSign className="w-5 h-5" />
             </div>
           </div>
           <div className="flex items-center gap-2 text-sm">
             {revenueChange !== 0 && (
-              <span className={`flex items-center font-bold ${revenueChange > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+              <span className={`flex items-center font-bold ${revenueChange > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                 {revenueChange > 0 ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
                 {Math.abs(revenueChange).toFixed(1)}%
               </span>
             )}
-            <span className="text-slate-500">vs last year</span>
+            <span className="text-slate-500 dark:text-slate-400">vs last year</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-colors duration-200">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Expenses</p>
-              <h3 className="text-2xl font-bold text-slate-900 mt-1">${totalExpenses.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Expenses</p>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">${totalExpenses.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
             </div>
-            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+            <div className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
               <TrendingDown className="w-5 h-5" />
             </div>
           </div>
           <div className="flex items-center gap-2 text-sm">
             {expensesChange !== 0 && (
-              <span className={`flex items-center font-bold ${expensesChange < 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+              <span className={`flex items-center font-bold ${expensesChange < 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                 {expensesChange > 0 ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
                 {Math.abs(expensesChange).toFixed(1)}%
               </span>
             )}
-            <span className="text-slate-500">vs last year</span>
+            <span className="text-slate-500 dark:text-slate-400">vs last year</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-colors duration-200">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Net Profit</p>
-              <h3 className={`text-2xl font-bold mt-1 ${netProfit >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Net Profit</p>
+              <h3 className={`text-2xl font-bold mt-1 ${netProfit >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-red-600 dark:text-red-400'}`}>
                 ${netProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}
               </h3>
             </div>
-            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+            <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <TrendingUp className="w-5 h-5" />
             </div>
           </div>
           <div className="flex items-center gap-2 text-sm">
             {profitChange !== 0 && (
-              <span className={`flex items-center font-bold ${profitChange > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+              <span className={`flex items-center font-bold ${profitChange > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                 {profitChange > 0 ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
                 {Math.abs(profitChange).toFixed(1)}%
               </span>
             )}
-            <span className="text-slate-500">vs last year</span>
+            <span className="text-slate-500 dark:text-slate-400">vs last year</span>
           </div>
         </div>
       </div>
 
       {/* Monthly Summaries */}
       {sortedMonths.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-6">
-          <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-            <h3 className="font-semibold text-slate-900">Monthly Summaries ({selectedYear})</h3>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden mb-6 transition-colors duration-200">
+          <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 transition-colors duration-200">
+            <h3 className="font-semibold text-slate-900 dark:text-white">Monthly Summaries ({selectedYear})</h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
+              <thead className="text-xs text-slate-500 dark:text-slate-400 uppercase bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 transition-colors duration-200">
                 <tr>
                   <th className="px-6 py-4 font-medium">Month</th>
                   <th className="px-6 py-4 font-medium text-right">Income</th>
@@ -240,7 +240,7 @@ export default function Reports() {
                   <th className="px-6 py-4 font-medium text-right">Net Profit</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {sortedMonths.map((month) => {
                   const data = monthlySummaries[month];
                   const profit = data.income - data.expense;
@@ -248,15 +248,15 @@ export default function Reports() {
                   const monthName = date.toLocaleString('default', { month: 'long' });
                   
                   return (
-                    <tr key={month} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="px-6 py-4 font-medium text-slate-900">{monthName}</td>
-                      <td className="px-6 py-4 text-right text-emerald-600 font-medium">
+                    <tr key={month} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
+                      <td className="px-6 py-4 font-medium text-slate-900 dark:text-white transition-colors">{monthName}</td>
+                      <td className="px-6 py-4 text-right text-emerald-600 dark:text-emerald-400 font-medium transition-colors">
                         ${data.income.toLocaleString(undefined, {minimumFractionDigits: 2})}
                       </td>
-                      <td className="px-6 py-4 text-right text-red-600 font-medium">
+                      <td className="px-6 py-4 text-right text-red-600 dark:text-red-400 font-medium transition-colors">
                         ${data.expense.toLocaleString(undefined, {minimumFractionDigits: 2})}
                       </td>
-                      <td className={`px-6 py-4 text-right font-bold ${profit >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+                      <td className={`px-6 py-4 text-right font-bold transition-colors ${profit >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-red-600 dark:text-red-400'}`}>
                         ${profit.toLocaleString(undefined, {minimumFractionDigits: 2})}
                       </td>
                     </tr>
@@ -268,15 +268,15 @@ export default function Reports() {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden transition-colors duration-200">
+        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50 transition-colors duration-200">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+            <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <FileText className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-900">Profit & Loss Statement</h3>
-              <p className="text-sm text-slate-500">Year to Date ({selectedYear})</p>
+              <h3 className="font-bold text-slate-900 dark:text-white">Profit & Loss Statement</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Year to Date ({selectedYear})</p>
             </div>
           </div>
         </div>
@@ -284,55 +284,55 @@ export default function Reports() {
         <div className="p-6 space-y-8">
           {/* Income Section */}
           <div>
-            <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">Income</h4>
+            <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 border-b border-slate-100 dark:border-slate-800 pb-2 transition-colors duration-200">Income</h4>
             <div className="space-y-3">
               {Object.keys(incomeByCategory).map(category => (
                 <div key={category} className="flex justify-between items-center text-sm">
-                  <span className="text-slate-600">{category}</span>
-                  <span className="font-medium text-slate-900">${incomeByCategory[category].toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                  <span className="text-slate-600 dark:text-slate-400 transition-colors">{category}</span>
+                  <span className="font-medium text-slate-900 dark:text-white transition-colors">${incomeByCategory[category].toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 </div>
               ))}
-              <div className="flex justify-between items-center text-sm font-bold pt-3 border-t border-slate-100">
-                <span className="text-slate-900">Total Income</span>
-                <span className="text-emerald-600">${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+              <div className="flex justify-between items-center text-sm font-bold pt-3 border-t border-slate-100 dark:border-slate-800 transition-colors duration-200">
+                <span className="text-slate-900 dark:text-white">Total Income</span>
+                <span className="text-emerald-600 dark:text-emerald-400">${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
               </div>
             </div>
           </div>
 
           {/* Expenses Section */}
           <div>
-            <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">Expenses</h4>
+            <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 border-b border-slate-100 dark:border-slate-800 pb-2 transition-colors duration-200">Expenses</h4>
             <div className="space-y-3">
               {Object.keys(expensesByCategory).map(category => (
                 <div key={category} className="flex justify-between items-center text-sm">
-                  <span className="text-slate-600">{category}</span>
-                  <span className="font-medium text-slate-900">${expensesByCategory[category].toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                  <span className="text-slate-600 dark:text-slate-400 transition-colors">{category}</span>
+                  <span className="font-medium text-slate-900 dark:text-white transition-colors">${expensesByCategory[category].toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 </div>
               ))}
-              <div className="flex justify-between items-center text-sm font-bold pt-3 border-t border-slate-100">
-                <span className="text-slate-900">Total Expenses</span>
-                <span className="text-red-600">${totalExpenses.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+              <div className="flex justify-between items-center text-sm font-bold pt-3 border-t border-slate-100 dark:border-slate-800 transition-colors duration-200">
+                <span className="text-slate-900 dark:text-white">Total Expenses</span>
+                <span className="text-red-600 dark:text-red-400">${totalExpenses.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
               </div>
             </div>
           </div>
 
           {/* Net Profit */}
-          <div className="bg-slate-50 rounded-xl p-4 flex justify-between items-center border border-slate-100">
-            <span className="font-bold text-slate-900 text-lg">Net Profit</span>
-            <span className="font-bold text-blue-600 text-xl">${netProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+          <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 flex justify-between items-center border border-slate-100 dark:border-slate-800 transition-colors duration-200">
+            <span className="font-bold text-slate-900 dark:text-white text-lg">Net Profit</span>
+            <span className="font-bold text-blue-600 dark:text-blue-400 text-xl">${netProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
           </div>
         </div>
       </div>
 
       {/* Expense Breakdown Chart */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden transition-colors duration-200">
+        <div className="p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 flex items-center gap-3 transition-colors duration-200">
+          <div className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
             <PieChart className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-bold text-slate-900">Expense Breakdown by Category</h3>
-            <p className="text-sm text-slate-500">Yearly distribution for {selectedYear}</p>
+            <h3 className="font-bold text-slate-900 dark:text-white">Expense Breakdown by Category</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Yearly distribution for {selectedYear}</p>
           </div>
         </div>
         <div className="p-6">

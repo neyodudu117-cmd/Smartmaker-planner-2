@@ -209,13 +209,13 @@ export default function Expenses() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Expenses</h2>
-          <p className="text-sm text-slate-500 mt-1">Track your business costs</p>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Expenses</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Track your business costs</p>
         </div>
         <div className="flex items-center gap-3">
           <button 
             onClick={handleExportCSV}
-            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"
+            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"
           >
             <Download className="w-4 h-4" />
             Export CSV
@@ -243,24 +243,24 @@ export default function Expenses() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-colors duration-200">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-medium text-slate-500">Total Expenses</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2">${totalExpenses.toLocaleString()}</h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Expenses</p>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">${totalExpenses.toLocaleString()}</h3>
             </div>
-            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+            <div className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
               <Receipt className="w-5 h-5" />
             </div>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-colors duration-200">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-medium text-slate-500">Tax Deductible</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2">${taxDeductible.toLocaleString()}</h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Tax Deductible</p>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">${taxDeductible.toLocaleString()}</h3>
             </div>
-            <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+            <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <ShieldCheck className="w-5 h-5" />
             </div>
           </div>
@@ -268,26 +268,26 @@ export default function Expenses() {
       </div>
 
       {isAdding && (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
-          <h3 className="text-lg font-bold text-slate-900 mb-4">{editingId ? 'Edit Expense Entry' : 'New Expense Entry'}</h3>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-6 transition-colors duration-200">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{editingId ? 'Edit Expense Entry' : 'New Expense Entry'}</h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Amount ($)</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Amount ($)</label>
               <input 
                 type="number" 
                 required
                 value={formData.amount}
                 onChange={e => setFormData({...formData, amount: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                 placeholder="0.00"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Category</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
               <select 
                 value={formData.category}
                 onChange={e => setFormData({...formData, category: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
               >
                 <option>Software</option>
                 <option>Marketing</option>
@@ -297,23 +297,23 @@ export default function Expenses() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Date</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date</label>
               <input 
                 type="date" 
                 required
                 value={formData.date}
                 onChange={e => setFormData({...formData, date: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
               <input 
                 type="text" 
                 required
                 value={formData.description}
                 onChange={e => setFormData({...formData, description: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
                 placeholder="e.g. Vercel Hosting"
               />
             </div>
@@ -323,7 +323,7 @@ export default function Expenses() {
                 role="switch"
                 aria-checked={formData.is_tax_deductible}
                 onClick={() => setFormData({...formData, is_tax_deductible: !formData.is_tax_deductible})}
-                className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${formData.is_tax_deductible ? 'bg-blue-600' : 'bg-slate-200'}`}
+                className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${formData.is_tax_deductible ? 'bg-blue-600' : 'bg-slate-200 dark:bg-slate-700'}`}
               >
                 <span
                   aria-hidden="true"
@@ -331,7 +331,7 @@ export default function Expenses() {
                 />
               </button>
               <label 
-                className="text-sm text-slate-700 cursor-pointer" 
+                className="text-sm text-slate-700 dark:text-slate-300 cursor-pointer" 
                 onClick={() => setFormData({...formData, is_tax_deductible: !formData.is_tax_deductible})}
               >
                 This expense is tax deductible
@@ -344,7 +344,7 @@ export default function Expenses() {
                   setIsAdding(false);
                   setEditingId(null);
                 }}
-                className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
               >
                 Cancel
               </button>
@@ -362,12 +362,12 @@ export default function Expenses() {
       {sortedMonths.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {sortedMonths.slice(0, 4).map(month => (
-            <div key={month} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+            <div key={month} className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-between transition-colors duration-200">
               <div>
-                <p className="text-sm font-medium text-slate-500 mb-1">{format(parseISO(month + '-01'), 'MMMM yyyy')}</p>
-                <h3 className="text-2xl font-bold text-slate-900">${monthlySummary[month].toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+                <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">{format(parseISO(month + '-01'), 'MMMM yyyy')}</p>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">${monthlySummary[month].toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
               </div>
-              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+              <div className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
                 <Calendar className="w-5 h-5" />
               </div>
             </div>
@@ -375,8 +375,8 @@ export default function Expenses() {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden transition-colors duration-200">
+        <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50 transition-colors duration-200">
           <div className="relative">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input 
@@ -384,12 +384,12 @@ export default function Expenses() {
               placeholder="Search expenses..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+              className="pl-9 pr-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
             />
           </div>
           <button 
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 text-sm font-medium px-3 py-2 border rounded-lg transition-colors ${showFilters ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900'}`}
+            className={`flex items-center gap-2 text-sm font-medium px-3 py-2 border rounded-lg transition-colors ${showFilters ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}`}
           >
             <Filter className="w-4 h-4" />
             Filter
@@ -397,31 +397,31 @@ export default function Expenses() {
         </div>
         
         {showFilters && (
-          <div className="p-4 border-b border-slate-100 bg-white grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 grid grid-cols-1 md:grid-cols-3 gap-4 transition-colors duration-200">
             <div>
-              <label className="block text-xs font-medium text-slate-500 mb-1">Start Date</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Start Date</label>
               <input 
                 type="date" 
                 value={filters.startDate}
                 onChange={(e) => setFilters({...filters, startDate: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 mb-1">End Date</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">End Date</label>
               <input 
                 type="date" 
                 value={filters.endDate}
                 onChange={(e) => setFilters({...filters, endDate: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 mb-1">Category</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Category</label>
               <select 
                 value={filters.category}
                 onChange={(e) => setFilters({...filters, category: e.target.value})}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
               >
                 <option value="">All Categories</option>
                 <option value="Software">Software</option>
@@ -434,7 +434,7 @@ export default function Expenses() {
             <div className="md:col-span-3 flex justify-end">
               <button 
                 onClick={() => setFilters({ startDate: '', endDate: '', category: '' })}
-                className="text-sm text-slate-500 hover:text-slate-700 font-medium"
+                className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-medium transition-colors"
               >
                 Clear Filters
               </button>
@@ -443,8 +443,8 @@ export default function Expenses() {
         )}
 
         {selectedIds.length > 0 && (
-          <div className="bg-blue-50 border-b border-blue-100 p-3 px-4 flex items-center justify-between">
-            <div className="text-sm font-medium text-blue-800">
+          <div className="bg-blue-50 dark:bg-blue-900/20 border-b border-blue-100 dark:border-blue-800 p-3 px-4 flex items-center justify-between transition-colors duration-200">
+            <div className="text-sm font-medium text-blue-800 dark:text-blue-300">
               {selectedIds.length} transaction{selectedIds.length > 1 ? 's' : ''} selected
             </div>
             <div className="flex items-center gap-2">
@@ -453,7 +453,7 @@ export default function Expenses() {
                   <select 
                     value={bulkCategory}
                     onChange={(e) => setBulkCategory(e.target.value)}
-                    className="border border-blue-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-700"
+                    className="border border-blue-200 dark:border-blue-700 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
                   >
                     <option value="">Select Category...</option>
                     <option value="Software">Software</option>
@@ -471,7 +471,7 @@ export default function Expenses() {
                   </button>
                   <button 
                     onClick={() => { setIsBulkCategorizing(false); setBulkCategory(''); }}
-                    className="px-3 py-1.5 text-blue-700 text-sm font-medium hover:bg-blue-100 rounded-lg transition-colors"
+                    className="px-3 py-1.5 text-blue-700 dark:text-blue-400 text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-lg transition-colors"
                   >
                     Cancel
                   </button>
@@ -480,14 +480,14 @@ export default function Expenses() {
                 <>
                   <button 
                     onClick={() => setIsBulkCategorizing(true)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-100 rounded-lg transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-lg transition-colors"
                   >
                     <Tag className="w-4 h-4" />
                     Categorize
                   </button>
                   <button 
                     onClick={handleBulkDelete}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                     Delete
@@ -500,12 +500,12 @@ export default function Expenses() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
+            <thead className="text-xs text-slate-500 dark:text-slate-400 uppercase bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 transition-colors duration-200">
               <tr>
                 <th className="px-6 py-4 font-medium w-10">
                   <input 
                     type="checkbox" 
-                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    className="rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
                     checked={filteredTransactions.length > 0 && selectedIds.length === filteredTransactions.length}
                     onChange={handleSelectAll}
                   />
@@ -518,35 +518,35 @@ export default function Expenses() {
                 <th className="px-6 py-4 font-medium w-16"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {filteredTransactions.map((t) => (
-                <tr key={t.id} className={`hover:bg-slate-50/50 transition-colors cursor-pointer relative z-0 hover:z-10 group ${selectedIds.includes(t.id) ? 'bg-blue-50/50' : ''}`}>
+                <tr key={t.id} className={`hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer relative z-0 hover:z-10 group ${selectedIds.includes(t.id) ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''}`}>
                   <td className="px-6 py-4">
                     <input 
                       type="checkbox" 
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      className="rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
                       checked={selectedIds.includes(t.id)}
                       onChange={() => handleSelectOne(t.id)}
                     />
                   </td>
-                  <td className="px-6 py-4 text-slate-600">{t.date}</td>
-                  <td className="px-6 py-4 font-medium text-slate-900">{t.description}</td>
+                  <td className="px-6 py-4 text-slate-600 dark:text-slate-400 transition-colors">{t.date}</td>
+                  <td className="px-6 py-4 font-medium text-slate-900 dark:text-white transition-colors">{t.description}</td>
                   <td className="px-6 py-4">
-                    <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
+                    <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors">
                       {t.category}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-center">
                     {t.is_tax_deductible ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800/50 transition-colors">
                         <ShieldCheck className="w-3 h-3" />
                         Deductible
                       </span>
                     ) : (
-                      <span className="text-slate-300">-</span>
+                      <span className="text-slate-300 dark:text-slate-600 transition-colors">-</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-right font-medium text-red-600">
+                  <td className="px-6 py-4 text-right font-medium text-red-600 dark:text-red-400 transition-colors">
                     -${t.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -555,7 +555,7 @@ export default function Expenses() {
                         e.stopPropagation();
                         handleEdit(t);
                       }}
-                      className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                      className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                       title="Edit transaction"
                     >
                       <Pencil className="w-4 h-4" />
@@ -565,7 +565,7 @@ export default function Expenses() {
               ))}
               {filteredTransactions.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-slate-500">
+                  <td colSpan={7} className="px-6 py-8 text-center text-slate-500 dark:text-slate-400 transition-colors">
                     No expense transactions found.
                   </td>
                 </tr>

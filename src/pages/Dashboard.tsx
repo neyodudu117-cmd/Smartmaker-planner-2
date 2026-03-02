@@ -100,7 +100,7 @@ export default function Dashboard() {
     <div className="space-y-6">
       {showLogoGenerator && <AILogoGenerator onClose={() => setShowLogoGenerator(false)} />}
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Dashboard Overview</h2>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Dashboard Overview</h2>
         <div className="flex items-center gap-4">
           <button
             onClick={() => setShowLogoGenerator(true)}
@@ -112,12 +112,12 @@ export default function Dashboard() {
           <select 
             value={currency} 
             onChange={(e) => setCurrency(e.target.value as 'USD' | 'EUR')}
-            className="text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+            className="text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer transition-colors"
           >
             <option value="USD">USD ($)</option>
             <option value="EUR">EUR (€)</option>
           </select>
-          <div className="text-sm text-slate-500">Last updated: Just now</div>
+          <div className="text-sm text-slate-500 dark:text-slate-400">Last updated: Just now</div>
         </div>
       </div>
 
@@ -127,21 +127,21 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
-          className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+          className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
         >
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-medium text-slate-500">Total Revenue</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2"><CountUp value={formatValue(summary.revenue)} prefix={currencySymbol} /></h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Revenue</p>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2"><CountUp value={formatValue(summary.revenue)} prefix={currencySymbol} /></h3>
             </div>
-            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+            <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <DollarSign className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
             <TrendingUp className="w-4 h-4 text-emerald-500 mr-1" />
             <span className="text-emerald-500 font-medium">+12.5%</span>
-            <span className="text-slate-400 ml-2">vs last month</span>
+            <span className="text-slate-400 dark:text-slate-500 ml-2">vs last month</span>
           </div>
         </motion.div>
 
@@ -149,21 +149,21 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
-          className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+          className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
         >
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-medium text-slate-500">Total Expenses</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2"><CountUp value={formatValue(summary.expenses)} prefix={currencySymbol} /></h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Expenses</p>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2"><CountUp value={formatValue(summary.expenses)} prefix={currencySymbol} /></h3>
             </div>
-            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+            <div className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
               <Activity className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
             <TrendingDown className="w-4 h-4 text-emerald-500 mr-1" />
             <span className="text-emerald-500 font-medium">-2.4%</span>
-            <span className="text-slate-400 ml-2">vs last month</span>
+            <span className="text-slate-400 dark:text-slate-500 ml-2">vs last month</span>
           </div>
         </motion.div>
 
@@ -171,21 +171,21 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3, ease: "easeOut" }}
-          className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+          className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
         >
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-medium text-slate-500">Net Profit</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2"><CountUp value={formatValue(summary.netProfit)} prefix={currencySymbol} /></h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Net Profit</p>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2"><CountUp value={formatValue(summary.netProfit)} prefix={currencySymbol} /></h3>
             </div>
-            <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+            <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <TrendingUp className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
             <TrendingUp className="w-4 h-4 text-emerald-500 mr-1" />
             <span className="text-emerald-500 font-medium">+18.2%</span>
-            <span className="text-slate-400 ml-2">vs last month</span>
+            <span className="text-slate-400 dark:text-slate-500 ml-2">vs last month</span>
           </div>
         </motion.div>
 
@@ -193,21 +193,21 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.4, ease: "easeOut" }}
-          className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+          className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
         >
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-medium text-slate-500">Affiliate Earnings</p>
-              <h3 className="text-3xl font-bold text-slate-900 mt-2"><CountUp value={formatValue(summary.affiliateEarnings)} prefix={currencySymbol} /></h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Affiliate Earnings</p>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2"><CountUp value={formatValue(summary.affiliateEarnings)} prefix={currencySymbol} /></h3>
             </div>
-            <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
+            <div className="w-10 h-10 rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
               <LinkIcon className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
             <TrendingUp className="w-4 h-4 text-emerald-500 mr-1" />
             <span className="text-emerald-500 font-medium">+5.1%</span>
-            <span className="text-slate-400 ml-2">vs last month</span>
+            <span className="text-slate-400 dark:text-slate-500 ml-2">vs last month</span>
           </div>
         </motion.div>
       </div>
@@ -218,17 +218,17 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.5, ease: "easeOut" }}
-          className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-2 hover:shadow-md transition-all duration-300"
+          className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 lg:col-span-2 hover:shadow-md transition-all duration-300"
         >
-          <h3 className="text-lg font-bold text-slate-900 mb-6">Revenue Trend</h3>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-6">Revenue Trend</h3>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trendData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" className="dark:opacity-10" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} dy={10} />
                 <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} dx={-10} tickFormatter={(value) => `${currencySymbol}${value}`} />
                 <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', backgroundColor: 'var(--tw-colors-white)', color: 'var(--tw-colors-slate-900)' }}
                   formatter={(value: number) => [`${currencySymbol}${value}`, 'Revenue']}
                 />
                 <Line 
@@ -262,9 +262,9 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.6, ease: "easeOut" }}
-          className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300"
+          className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-all duration-300"
         >
-          <h3 className="text-lg font-bold text-slate-900 mb-6">Income Breakdown</h3>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-6">Income Breakdown</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -286,7 +286,7 @@ export default function Dashboard() {
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', backgroundColor: 'var(--tw-colors-white)', color: 'var(--tw-colors-slate-900)' }}
                   formatter={(value: number) => [`${currencySymbol}${value.toLocaleString()}`, 'Amount']}
                 />
                 <Legend verticalAlign="bottom" height={36} iconType="circle" />
@@ -298,9 +298,9 @@ export default function Dashboard() {
               <div key={entry.name} className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
-                  <span className="text-slate-600">{entry.name}</span>
+                  <span className="text-slate-600 dark:text-slate-400">{entry.name}</span>
                 </div>
-                <span className="font-medium text-slate-900">{currencySymbol}{entry.value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
+                <span className="font-medium text-slate-900 dark:text-slate-100">{currencySymbol}{entry.value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
               </div>
             ))}
           </div>
@@ -313,22 +313,22 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.7, ease: "easeOut" }}
-          className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+          className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
         >
-          <h3 className="text-lg font-bold text-slate-900 mb-4">Top Affiliate Program</h3>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Top Affiliate Program</h3>
           {topAffiliate ? (
-            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
+            <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
               <div>
-                <p className="font-semibold text-slate-900">{topAffiliate.name}</p>
-                <p className="text-sm text-slate-500 mt-1">{topAffiliate.conversions} conversions</p>
+                <p className="font-semibold text-slate-900 dark:text-white">{topAffiliate.name}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{topAffiliate.conversions} conversions</p>
               </div>
               <div className="text-right">
-                <p className="text-xl font-bold text-blue-600">{currencySymbol}{formatValue(topAffiliate.commissions).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
-                <p className="text-sm text-slate-500 mt-1">Earned</p>
+                <p className="text-xl font-bold text-blue-600 dark:text-blue-400">{currencySymbol}{formatValue(topAffiliate.commissions).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Earned</p>
               </div>
             </div>
           ) : (
-            <p className="text-slate-500 text-sm">No affiliate data available.</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">No affiliate data available.</p>
           )}
         </motion.div>
 
@@ -337,22 +337,22 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.8, ease: "easeOut" }}
-          className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+          className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
         >
-          <h3 className="text-lg font-bold text-slate-900 mb-4">Best Selling Product</h3>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Best Selling Product</h3>
           {topProduct ? (
-            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
+            <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
               <div>
-                <p className="font-semibold text-slate-900">{topProduct.name}</p>
-                <p className="text-sm text-slate-500 mt-1">{topProduct.sales} sales</p>
+                <p className="font-semibold text-slate-900 dark:text-white">{topProduct.name}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{topProduct.sales} sales</p>
               </div>
               <div className="text-right">
-                <p className="text-xl font-bold text-emerald-600">{currencySymbol}{formatValue(topProduct.gross_revenue).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
-                <p className="text-sm text-slate-500 mt-1">Gross Revenue</p>
+                <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{currencySymbol}{formatValue(topProduct.gross_revenue).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Gross Revenue</p>
               </div>
             </div>
           ) : (
-            <p className="text-slate-500 text-sm">No product data available.</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">No product data available.</p>
           )}
         </motion.div>
       </div>

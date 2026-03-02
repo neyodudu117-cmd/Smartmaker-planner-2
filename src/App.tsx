@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, DollarSign, Link as LinkIcon, ShoppingBag, Receipt, PieChart, Target, LogOut } from 'lucide-react';
+import { LayoutDashboard, DollarSign, Link as LinkIcon, ShoppingBag, Receipt, PieChart, Target, LogOut, Moon, Sun } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { supabase } from './lib/supabase';
+import { useTheme } from './lib/theme';
 
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
@@ -22,6 +23,7 @@ export function cn(...inputs: ClassValue[]) {
 function Sidebar({ user }: { user: any }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -39,14 +41,21 @@ function Sidebar({ user }: { user: any }) {
   ];
 
   return (
-    <div className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0">
-      <div className="p-6">
-        <Link to="/" className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+    <div className="w-64 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flex flex-col h-screen sticky top-0 transition-colors duration-200">
+      <div className="p-6 flex items-center justify-between">
+        <Link to="/" className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-xl">S</span>
           </div>
           SmartMaker
         </Link>
+        <button 
+          onClick={toggleTheme} 
+          className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          aria-label="Toggle dark mode"
+        >
+          {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
       </div>
       <nav className="flex-1 px-4 space-y-1">
         {navItems.map((item) => {
@@ -58,28 +67,28 @@ function Sidebar({ user }: { user: any }) {
               className={cn(
                 "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200",
                 isActive 
-                  ? "bg-blue-50 text-blue-700 font-semibold shadow-sm ring-1 ring-blue-500/10" 
-                  : "text-slate-600 font-medium hover:bg-slate-50 hover:text-slate-900"
+                  ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-semibold shadow-sm ring-1 ring-blue-500/10 dark:ring-blue-400/20" 
+                  : "text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-50 dark:hover:bg-slate-900/50 hover:text-slate-900 dark:hover:text-slate-200"
               )}
             >
-              <item.icon className={cn("w-5 h-5 transition-colors", isActive ? "text-blue-600" : "text-slate-400 group-hover:text-slate-500")} />
+              <item.icon className={cn("w-5 h-5 transition-colors", isActive ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-500 dark:group-hover:text-slate-400")} />
               {item.name}
             </Link>
           );
         })}
       </nav>
-      <div className="p-4 border-t border-slate-200">
+      <div className="p-4 border-t border-slate-200 dark:border-slate-800 transition-colors duration-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-medium uppercase">
+            <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 font-medium uppercase transition-colors duration-200">
               {user?.email?.substring(0, 2) || 'DU'}
             </div>
             <div className="overflow-hidden">
-              <p className="text-sm font-medium text-slate-900 truncate w-24">{user?.user_metadata?.full_name || user?.email || 'Demo User'}</p>
-              <p className="text-xs text-slate-500">Pro Plan</p>
+              <p className="text-sm font-medium text-slate-900 dark:text-slate-200 truncate w-24 transition-colors duration-200">{user?.user_metadata?.full_name || user?.email || 'Demo User'}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 transition-colors duration-200">Pro Plan</p>
             </div>
           </div>
-          <button onClick={handleSignOut} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Sign out">
+          <button onClick={handleSignOut} className="p-2 text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Sign out">
             <LogOut className="w-5 h-5" />
           </button>
         </div>
@@ -94,7 +103,7 @@ function DashboardLayout({ children, user }: { children: React.ReactNode, user: 
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex font-sans text-slate-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex font-sans text-slate-900 dark:text-slate-50 transition-colors duration-200">
       <Sidebar user={user} />
       <main className="flex-1 p-8 overflow-y-auto">
         <div className="max-w-6xl mx-auto">
