@@ -98,7 +98,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Dashboard Overview</h2>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight font-display">Dashboard Overview</h2>
         <div className="flex items-center gap-4">
           <div className="text-sm text-slate-500 dark:text-slate-400">Last updated: Just now</div>
         </div>

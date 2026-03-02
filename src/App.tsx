@@ -46,9 +46,9 @@ function Sidebar({ user }: { user: any }) {
   return (
     <div className="w-64 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flex flex-col h-screen sticky top-0 transition-colors duration-200">
       <div className="p-6 flex items-center justify-between">
-        <Link to="/" className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+        <Link to="/" className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2 font-display">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-xl">S</span>
+            <span className="text-white font-bold text-xl font-display">S</span>
           </div>
           SmartMaker
         </Link>
@@ -104,11 +104,11 @@ function Sidebar({ user }: { user: any }) {
       <div className="p-4 border-t border-slate-200 dark:border-slate-800 transition-colors duration-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 font-medium uppercase transition-colors duration-200">
-              {user?.email?.substring(0, 2) || 'DU'}
+            <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold uppercase transition-colors duration-200 font-display">
+              {user?.email?.charAt(0).toUpperCase() || 'D'}
             </div>
             <div className="overflow-hidden">
-              <p className="text-sm font-medium text-slate-900 dark:text-slate-200 truncate w-24 transition-colors duration-200">{user?.user_metadata?.full_name || user?.email || 'Demo User'}</p>
+              <p className="text-sm font-semibold text-slate-900 dark:text-slate-200 truncate w-24 transition-colors duration-200 font-display">{user?.user_metadata?.full_name || user?.email || 'Demo User'}</p>
               <p className="text-xs text-slate-500 dark:text-slate-400 transition-colors duration-200">Pro Plan</p>
             </div>
           </div>

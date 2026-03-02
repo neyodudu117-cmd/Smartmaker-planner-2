@@ -56,7 +56,7 @@ export default function DigitalProducts() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Digital Products</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight font-display">Digital Products</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Track sales, gross revenue, and platform fees</p>
         </div>
         <button 

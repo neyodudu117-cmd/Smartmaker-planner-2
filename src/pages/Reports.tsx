@@ -138,7 +138,7 @@ export default function Reports() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Financial Reports</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight font-display">Financial Reports</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Profit & Loss statements and exports</p>
         </div>
         <div className="flex items-center gap-4">
