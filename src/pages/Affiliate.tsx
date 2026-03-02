@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Link as LinkIcon, MousePointerClick, ShoppingCart, DollarSign } from 'lucide-react';
 import { apiFetch } from '../lib/api';
+import { useCurrency } from '../lib/currency';
 
 export default function Affiliate() {
+  const { currency, formatCurrency } = useCurrency();
   const [programs, setPrograms] = useState<any[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [formData, setFormData] = useState({
@@ -125,7 +127,7 @@ export default function Affiliate() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Commissions Earned ($)</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Commissions Earned ({currency.symbol})</label>
               <input 
                 type="number" 
                 required
@@ -195,7 +197,7 @@ export default function Affiliate() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400">EPC (Earnings Per Click)</p>
-              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">${epc}</h3>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{formatCurrency(parseFloat(epc))}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
               <DollarSign className="w-5 h-5" />
@@ -212,7 +214,7 @@ export default function Affiliate() {
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-slate-200)" className="dark:opacity-10" />
               <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: 'var(--color-slate-500)', fontSize: 12}} dy={10} />
-              <YAxis axisLine={false} tickLine={false} tick={{fill: 'var(--color-slate-500)', fontSize: 12}} dx={-10} tickFormatter={(value) => `$${value}`} />
+              <YAxis axisLine={false} tickLine={false} tick={{fill: 'var(--color-slate-500)', fontSize: 12}} dx={-10} tickFormatter={(value) => `${currency.symbol}${value}`} />
               <Tooltip 
                 contentStyle={{ 
                   borderRadius: '12px', 
@@ -223,6 +225,7 @@ export default function Affiliate() {
                 }}
                 cursor={{fill: 'var(--tw-colors-slate-50)'}}
                 wrapperClassName="dark:!bg-slate-800 dark:!border-slate-700 dark:!text-white"
+                formatter={(value: number) => [`${currency.symbol}${value.toLocaleString()}`, 'Commissions']}
               />
               <Bar dataKey="Commissions" fill="#3b82f6" radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -260,7 +263,7 @@ export default function Affiliate() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right font-medium text-emerald-600 dark:text-emerald-400 transition-colors">
-                      ${p.commissions.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                      {formatCurrency(p.commissions)}
                     </td>
                   </tr>
                 );

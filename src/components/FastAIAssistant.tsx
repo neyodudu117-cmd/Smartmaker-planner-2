@@ -2,13 +2,50 @@ import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI } from '@google/genai';
 import { Sparkles, Send, X, MessageSquare, Loader2, Minimize2, Maximize2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useCurrency } from '../lib/currency';
 
 export default function FastAIAssistant() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { currency } = useCurrency();
+  const [isOpen, setIsOpen] = useState(true);
   const [isMinimized, setIsMinimized] = useState(false);
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<{ role: 'user' | 'ai'; content: string }[]>([]);
+  const [messages, setMessages] = useState<{ role: 'user' | 'ai'; content: string }[]>([
+    { role: 'ai', content: "Hello! I'm your Fast AI Assistant. How can I help you manage your business finances today?" }
+  ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [thinkingMessage, setThinkingMessage] = useState('Thinking...');
+  
+  const getSuggestions = () => {
+    const path = window.location.pathname;
+    if (path.includes('revenue')) {
+      return ["Top income sources?", "How to boost revenue?", "Revenue trends?"];
+    }
+    if (path.includes('expenses')) {
+      return ["Highest expense category?", "Tax deductible tips?", "Reduce costs?"];
+    }
+    if (path.includes('affiliate')) {
+      return ["Best affiliate program?", "Increase conversions?", "New program ideas?"];
+    }
+    if (path.includes('products')) {
+      return ["Best selling product?", "Pricing strategy?", "Product ideas?"];
+    }
+    return ["Profit this month?", "Top expenses?", "Growth tips?"];
+  };
+
+  const suggestions = getSuggestions();
+
+  useEffect(() => {
+    if (isLoading) {
+      const messages = ['Analyzing data...', 'Consulting Gemini...', 'Calculating...', 'Almost there...'];
+      let i = 0;
+      const interval = setInterval(() => {
+        i = (i + 1) % messages.length;
+        setThinkingMessage(messages[i]);
+      }, 1500);
+      return () => clearInterval(interval);
+    }
+  }, [isLoading]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -19,12 +56,13 @@ export default function FastAIAssistant() {
     scrollToBottom();
   }, [messages]);
 
-  const handleSend = async (e?: React.FormEvent) => {
+  const handleSend = async (e?: React.FormEvent, overrideInput?: string) => {
     e?.preventDefault();
-    if (!input.trim() || isLoading) return;
+    const messageToSend = overrideInput || input;
+    if (!messageToSend.trim() || isLoading) return;
 
-    const userMessage = input.trim();
-    setInput('');
+    const userMessage = messageToSend.trim();
+    if (!overrideInput) setInput('');
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
 
@@ -32,7 +70,7 @@ export default function FastAIAssistant() {
       // @ts-ignore
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       
-      const response = await ai.models.generateContent({
+      const response = await ai.models.generateContentStream({
         model: 'gemini-2.5-flash-lite-latest',
         contents: [
           {
@@ -41,15 +79,27 @@ export default function FastAIAssistant() {
           }
         ],
         config: {
-          systemInstruction: "You are a helpful financial assistant for digital entrepreneurs. Keep your responses concise, professional, and actionable. You have access to the user's financial dashboard context (revenue, expenses, affiliate programs).",
+          systemInstruction: `You are a helpful financial assistant for digital entrepreneurs. Keep your responses concise, professional, and actionable. 
+          The user is currently on the "${window.location.pathname}" page. 
+          The user's preferred currency is ${currency.name} (${currency.code}). Please use the ${currency.symbol} symbol for all monetary values in your responses.
+          You have access to the user's financial dashboard context (revenue, expenses, affiliate programs).`,
           temperature: 0.7,
           topP: 0.95,
           topK: 40,
         }
       });
 
-      const aiResponse = response.text || "I'm sorry, I couldn't process that request.";
-      setMessages(prev => [...prev, { role: 'ai', content: aiResponse }]);
+      let fullText = '';
+      setMessages(prev => [...prev, { role: 'ai', content: '' }]);
+      
+      for await (const chunk of response) {
+        fullText += chunk.text || '';
+        setMessages(prev => {
+          const newMessages = [...prev];
+          newMessages[newMessages.length - 1] = { role: 'ai', content: fullText };
+          return newMessages;
+        });
+      }
     } catch (error) {
       console.error('AI Error:', error);
       setMessages(prev => [...prev, { role: 'ai', content: "Sorry, I'm having trouble connecting right now. Please try again later." }]);
@@ -80,7 +130,10 @@ export default function FastAIAssistant() {
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold">Fast AI Assistant</h3>
+                  <div className="flex items-center gap-1.5">
+                    <h3 className="text-sm font-bold">Fast AI Assistant</h3>
+                    <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  </div>
                   <p className="text-[10px] text-blue-100 font-medium uppercase tracking-wider">Powered by Gemini 2.5 Lite</p>
                 </div>
               </div>
@@ -130,8 +183,21 @@ export default function FastAIAssistant() {
                     <div className="flex justify-start">
                       <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-3 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-2">
                         <Loader2 className="w-4 h-4 text-blue-600 animate-spin" />
-                        <span className="text-xs text-slate-500">Thinking...</span>
+                        <span className="text-xs text-slate-500 italic">{thinkingMessage}</span>
                       </div>
+                    </div>
+                  )}
+                  {messages.length === 1 && !isLoading && (
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {suggestions.map((suggestion, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleSend(undefined, suggestion)}
+                          className="text-[10px] font-bold px-2.5 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-slate-600 dark:text-slate-400 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all shadow-sm"
+                        >
+                          {suggestion}
+                        </button>
+                      ))}
                     </div>
                   )}
                   <div ref={messagesEndRef} />
@@ -169,8 +235,13 @@ export default function FastAIAssistant() {
           onClick={() => setIsOpen(true)}
           className="w-14 h-14 bg-blue-600 text-white rounded-full shadow-xl flex items-center justify-center hover:bg-blue-700 transition-colors group relative"
         >
-          <Sparkles className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"></span>
+          <motion.div
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="absolute inset-0 rounded-full bg-blue-600/20"
+          />
+          <Sparkles className="w-6 h-6 group-hover:rotate-12 transition-transform relative z-10" />
+          <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full z-20"></span>
         </motion.button>
       )}
     </div>

@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Download, FileText, Calendar, PieChart, TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
 import { apiFetch } from '../lib/api';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { useCurrency } from '../lib/currency';
 
 export default function Reports() {
+  const { currency, formatCurrency } = useCurrency();
   const [data, setData] = useState<any>(null);
   const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
 
@@ -170,7 +172,7 @@ export default function Reports() {
           <div className="flex justify-between items-start mb-4">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Revenue</p>
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{formatCurrency(totalRevenue)}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <DollarSign className="w-5 h-5" />
@@ -191,7 +193,7 @@ export default function Reports() {
           <div className="flex justify-between items-start mb-4">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Expenses</p>
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">${totalExpenses.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{formatCurrency(totalExpenses)}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
               <TrendingDown className="w-5 h-5" />
@@ -213,7 +215,7 @@ export default function Reports() {
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Net Profit</p>
               <h3 className={`text-2xl font-bold mt-1 ${netProfit >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-red-600 dark:text-red-400'}`}>
-                ${netProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                {formatCurrency(netProfit)}
               </h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
@@ -259,13 +261,13 @@ export default function Reports() {
                     <tr key={month} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
                       <td className="px-6 py-4 font-medium text-slate-900 dark:text-white transition-colors">{monthName}</td>
                       <td className="px-6 py-4 text-right text-emerald-600 dark:text-emerald-400 font-medium transition-colors">
-                        ${data.income.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                        {formatCurrency(data.income)}
                       </td>
                       <td className="px-6 py-4 text-right text-red-600 dark:text-red-400 font-medium transition-colors">
-                        ${data.expense.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                        {formatCurrency(data.expense)}
                       </td>
                       <td className={`px-6 py-4 text-right font-bold transition-colors ${profit >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-red-600 dark:text-red-400'}`}>
-                        ${profit.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                        {formatCurrency(profit)}
                       </td>
                     </tr>
                   );
@@ -299,12 +301,12 @@ export default function Reports() {
                 return (
                 <div key={category} className={`flex justify-between items-center text-sm ${isLargest ? 'font-bold text-emerald-600 dark:text-emerald-400' : ''}`}>
                   <span className={isLargest ? '' : 'text-slate-600 dark:text-slate-400 transition-colors'}>{category}</span>
-                  <span className={isLargest ? '' : 'font-medium text-slate-900 dark:text-white transition-colors'}>${incomeByCategory[category].toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                  <span className={isLargest ? '' : 'font-medium text-slate-900 dark:text-white transition-colors'}>{formatCurrency(incomeByCategory[category])}</span>
                 </div>
               )})}
               <div className="flex justify-between items-center text-sm font-bold pt-3 border-t border-slate-100 dark:border-slate-800 transition-colors duration-200">
                 <span className="text-slate-900 dark:text-white">Total Income</span>
-                <span className="text-emerald-600 dark:text-emerald-400">${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="text-emerald-600 dark:text-emerald-400">{formatCurrency(totalRevenue)}</span>
               </div>
             </div>
           </div>
@@ -318,12 +320,12 @@ export default function Reports() {
                 return (
                 <div key={category} className={`flex justify-between items-center text-sm ${isLargest ? 'font-bold text-red-600 dark:text-red-400' : ''}`}>
                   <span className={isLargest ? '' : 'text-slate-600 dark:text-slate-400 transition-colors'}>{category}</span>
-                  <span className={isLargest ? '' : 'font-medium text-slate-900 dark:text-white transition-colors'}>${expensesByCategory[category].toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                  <span className={isLargest ? '' : 'font-medium text-slate-900 dark:text-white transition-colors'}>{formatCurrency(expensesByCategory[category])}</span>
                 </div>
               )})}
               <div className="flex justify-between items-center text-sm font-bold pt-3 border-t border-slate-100 dark:border-slate-800 transition-colors duration-200">
                 <span className="text-slate-900 dark:text-white">Total Expenses</span>
-                <span className="text-red-600 dark:text-red-400">${totalExpenses.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="text-red-600 dark:text-red-400">{formatCurrency(totalExpenses)}</span>
               </div>
             </div>
           </div>
@@ -331,7 +333,7 @@ export default function Reports() {
           {/* Net Profit */}
           <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 flex justify-between items-center border border-slate-100 dark:border-slate-800 transition-colors duration-200">
             <span className="font-bold text-slate-900 dark:text-white text-lg">Net Profit</span>
-            <span className="font-bold text-blue-600 dark:text-blue-400 text-xl">${netProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+            <span className="font-bold text-blue-600 dark:text-blue-400 text-xl">{formatCurrency(netProfit)}</span>
           </div>
         </div>
       </div>
@@ -367,7 +369,7 @@ export default function Reports() {
                   axisLine={false} 
                   tickLine={false} 
                   tick={{ fill: '#64748b', fontSize: 12 }}
-                  tickFormatter={(value) => `$${value}`}
+                  tickFormatter={(value) => `${currency.symbol}${value}`}
                 />
                 <Tooltip 
                   cursor={{ fill: '#f8fafc' }}
@@ -378,7 +380,7 @@ export default function Reports() {
                     fontSize: '12px',
                     fontWeight: 'bold'
                   }}
-                  formatter={(value: number) => [`$${value.toLocaleString()}`, 'Total Expense']}
+                  formatter={(value: number) => [formatCurrency(value), 'Total Expense']}
                 />
                 <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={40}>
                   {Object.entries(expensesByCategory).map(([name, _], index) => (

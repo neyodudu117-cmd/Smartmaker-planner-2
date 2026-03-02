@@ -1,32 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Target, TrendingUp, Calendar, CheckCircle2, ArrowUpRight, Trophy, Flag } from 'lucide-react';
+import { Target, TrendingUp, Calendar, CheckCircle2, ArrowUpRight, Trophy, Flag, Settings2, Sliders, Share2, Sparkles } from 'lucide-react';
 import { apiFetch } from '../lib/api';
 import { motion, AnimatePresence } from 'motion/react';
+import { useCurrency } from '../lib/currency';
 
 const Confetti = () => (
   <div className="absolute inset-0 pointer-events-none overflow-hidden">
-    {[...Array(12)].map((_, i) => (
+    {[...Array(20)].map((_, i) => (
       <motion.div
         key={i}
         initial={{ 
           top: "100%", 
           left: `${Math.random() * 100}%`,
           scale: Math.random() * 0.5 + 0.5,
-          rotate: 0
+          rotate: 0,
+          opacity: 1
         }}
         animate={{ 
           top: "-10%",
-          left: `${Math.random() * 100}%`,
-          rotate: 360
+          left: `${Math.random() * 100 + (Math.random() * 20 - 10)}%`,
+          rotate: 720,
+          opacity: [1, 1, 0]
         }}
         transition={{ 
-          duration: Math.random() * 2 + 2,
+          duration: Math.random() * 3 + 2,
           repeat: Infinity,
-          ease: "linear",
-          delay: Math.random() * 2
+          ease: "easeOut",
+          delay: Math.random() * 5
         }}
         className={`absolute w-2 h-2 rounded-sm ${
-          ['bg-emerald-400', 'bg-yellow-400', 'bg-blue-400', 'bg-pink-400'][i % 4]
+          ['bg-emerald-400', 'bg-yellow-400', 'bg-blue-400', 'bg-pink-400', 'bg-purple-400', 'bg-orange-400'][i % 6]
         }`}
       />
     ))}
@@ -73,13 +76,22 @@ const CircularProgress = ({ progress, color, size = 64, strokeWidth = 6 }: { pro
 };
 
 export default function Goals() {
+  const { currency, formatCurrency } = useCurrency();
   const [goals, setGoals] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [isAdding, setIsAdding] = useState(false);
+  const [showForecastSettings, setShowForecastSettings] = useState(false);
   const [formData, setFormData] = useState({
     type: 'income',
     target_amount: '',
     month: new Date().toISOString().substring(0, 10)
+  });
+
+  // Forecasting Settings
+  const [forecastSettings, setForecastSettings] = useState({
+    method: 'linear', // 'linear', 'moving_average', 'conservative'
+    lookbackMonths: 3,
+    growthMultiplier: 1.0
   });
 
   useEffect(() => {
@@ -129,22 +141,34 @@ export default function Goals() {
     }, {} as Record<string, number>);
 
   const sortedMonths = Object.keys(incomeByMonth).sort();
-  const hasEnoughData = sortedMonths.length >= 3;
+  const hasEnoughData = sortedMonths.length >= forecastSettings.lookbackMonths;
 
   let forecastAmount = 0;
   let forecastGrowth = 0;
 
   if (hasEnoughData) {
-    const last3Months = sortedMonths.slice(-3);
-    const amounts = last3Months.map(m => incomeByMonth[m]);
+    const lookback = sortedMonths.slice(-forecastSettings.lookbackMonths);
+    const amounts = lookback.map(m => incomeByMonth[m]);
     
-    // Trend: difference between last month and first month of the 3-month period
-    const trend = (amounts[2] - amounts[0]) / 2; // average monthly change
-    
-    forecastAmount = amounts[2] + trend;
-    if (forecastAmount < 0) forecastAmount = 0;
+    if (forecastSettings.method === 'linear') {
+      // Linear trend based on the lookback period
+      const trend = (amounts[amounts.length - 1] - amounts[0]) / (amounts.length - 1);
+      forecastAmount = amounts[amounts.length - 1] + (trend * forecastSettings.growthMultiplier);
+    } else if (forecastSettings.method === 'moving_average') {
+      // Simple moving average
+      const average = amounts.reduce((a, b) => a + b, 0) / amounts.length;
+      forecastAmount = average * forecastSettings.growthMultiplier;
+    } else if (forecastSettings.method === 'conservative') {
+      // 80% of the last month's value or average, whichever is lower
+      const lastMonth = amounts[amounts.length - 1];
+      const average = amounts.reduce((a, b) => a + b, 0) / amounts.length;
+      forecastAmount = Math.min(lastMonth, average) * 0.8 * forecastSettings.growthMultiplier;
+    }
 
-    forecastGrowth = amounts[2] > 0 ? (trend / amounts[2]) * 100 : 0;
+    if (forecastAmount < 0) forecastAmount = 0;
+    
+    const lastMonthAmount = amounts[amounts.length - 1];
+    forecastGrowth = lastMonthAmount > 0 ? ((forecastAmount - lastMonthAmount) / lastMonthAmount) * 100 : 0;
   }
 
   return (
@@ -179,7 +203,7 @@ export default function Goals() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Target Amount ($)</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Target Amount ({currency.symbol})</label>
               <input 
                 type="number" 
                 required
@@ -267,17 +291,26 @@ export default function Goals() {
               transition={{ duration: 0.5, ease: "easeOut" }}
               className={`relative bg-white dark:bg-slate-900 rounded-3xl shadow-sm border overflow-hidden group hover:shadow-xl transition-all duration-500 ${
                 isCompleted 
-                ? 'border-emerald-200 dark:border-emerald-800 shadow-emerald-500/10 ring-1 ring-emerald-100 dark:ring-emerald-900' 
+                ? 'border-emerald-200 dark:border-emerald-800 shadow-emerald-500/10 ring-1 ring-emerald-100 dark:ring-emerald-900 bg-gradient-to-br from-white to-emerald-50/30 dark:from-slate-900 dark:to-emerald-900/10' 
                 : 'border-slate-100 dark:border-slate-800 hover:shadow-blue-500/5'
               }`}
             >
-              {isCompleted && <Confetti />}
+              {isCompleted && (
+                <>
+                  <Confetti />
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="absolute inset-0 bg-emerald-500/5 pointer-events-none"
+                  />
+                </>
+              )}
               <div className="p-6 relative z-10">
                 <div className="flex justify-between items-start mb-6">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
-                        isCompleted ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400' :
+                        isCompleted ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300' :
                         goal.type === 'income' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400'
                       }`}>
                         {goal.type}
@@ -293,11 +326,11 @@ export default function Goals() {
                       </h3>
                       {isCompleted && (
                         <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
+                          initial={{ scale: 0, rotate: -45 }}
+                          animate={{ scale: 1, rotate: 0 }}
                           transition={{ type: "spring", stiffness: 500, damping: 15, delay: 0.5 }}
                         >
-                          <Trophy className="w-5 h-5 text-yellow-500 fill-yellow-500/20" />
+                          <Trophy className="w-6 h-6 text-yellow-500 fill-yellow-500/20 drop-shadow-[0_0_8px_rgba(234,179,8,0.4)]" />
                         </motion.div>
                       )}
                     </div>
@@ -314,25 +347,31 @@ export default function Goals() {
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Current Status</p>
                       <div className="flex items-baseline gap-1">
                         <span className={`text-2xl font-black transition-colors duration-500 ${isCompleted ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-white'}`}>
-                          ${currentAmount.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}
+                          {formatCurrency(currentAmount)}
                         </span>
-                        <span className="text-xs font-medium text-slate-400">/ ${goal.target_amount.toLocaleString()}</span>
+                        <span className="text-xs font-medium text-slate-400">/ {formatCurrency(goal.target_amount)}</span>
                       </div>
                     </div>
                     {isCompleted ? (
-                      <motion.div 
-                        initial={{ rotate: -15, scale: 0.8 }}
-                        animate={{ rotate: 0, scale: 1 }}
-                        className="bg-emerald-500 text-white px-3 py-1.5 rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-1.5"
-                      >
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span className="text-xs font-bold uppercase tracking-wider">Achieved</span>
-                      </motion.div>
+                      <div className="flex flex-col items-end gap-2">
+                        <motion.div 
+                          initial={{ rotate: -15, scale: 0.8 }}
+                          animate={{ rotate: 0, scale: 1 }}
+                          className="bg-emerald-500 text-white px-3 py-1.5 rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-1.5"
+                        >
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span className="text-xs font-bold uppercase tracking-wider">Achieved</span>
+                        </motion.div>
+                        <button className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 hover:underline">
+                          <Share2 className="w-3 h-3" />
+                          Share Success
+                        </button>
+                      </div>
                     ) : (
                       <div className="text-right">
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Remaining</p>
                         <p className="text-sm font-bold text-slate-900 dark:text-white">
-                          ${Math.max(0, targetAmount - currentAmount).toLocaleString(undefined, {maximumFractionDigits: 0})}
+                          {formatCurrency(Math.max(0, targetAmount - currentAmount))}
                         </p>
                       </div>
                     )}
@@ -389,21 +428,92 @@ export default function Goals() {
       </div>
 
       <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-colors duration-200">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-            <TrendingUp className="w-5 h-5" />
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+              <TrendingUp className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Income Forecast</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Based on historical data</p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Income Forecast</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Based on historical data</p>
-          </div>
+          <button 
+            onClick={() => setShowForecastSettings(!showForecastSettings)}
+            className={`p-2 rounded-xl transition-all ${showForecastSettings ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+            title="Forecast Settings"
+          >
+            <Settings2 className="w-5 h-5" />
+          </button>
         </div>
+
+        <AnimatePresence>
+          {showForecastSettings && (
+            <motion.div 
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden mb-6"
+            >
+              <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Forecasting Method</label>
+                  <div className="flex flex-col gap-2">
+                    {['linear', 'moving_average', 'conservative'].map(method => (
+                      <button
+                        key={method}
+                        onClick={() => setForecastSettings({ ...forecastSettings, method })}
+                        className={`text-left px-3 py-2 rounded-lg text-sm font-medium transition-all ${forecastSettings.method === method ? 'bg-blue-600 text-white shadow-md' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+                      >
+                        {method.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Lookback Period ({forecastSettings.lookbackMonths} months)</label>
+                  <input 
+                    type="range" 
+                    min="3" 
+                    max="12" 
+                    step="1"
+                    value={forecastSettings.lookbackMonths}
+                    onChange={(e) => setForecastSettings({ ...forecastSettings, lookbackMonths: parseInt(e.target.value) })}
+                    className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  />
+                  <div className="flex justify-between text-[10px] font-bold text-slate-400 mt-2">
+                    <span>3M</span>
+                    <span>6M</span>
+                    <span>12M</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Growth Multiplier ({forecastSettings.growthMultiplier}x)</label>
+                  <input 
+                    type="range" 
+                    min="0.5" 
+                    max="2.0" 
+                    step="0.1"
+                    value={forecastSettings.growthMultiplier}
+                    onChange={(e) => setForecastSettings({ ...forecastSettings, growthMultiplier: parseFloat(e.target.value) })}
+                    className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  />
+                  <div className="flex justify-between text-[10px] font-bold text-slate-400 mt-2">
+                    <span>0.5x</span>
+                    <span>1.0x</span>
+                    <span>2.0x</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
         
         {hasEnoughData ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-1 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col justify-center transition-colors duration-200">
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Next Month Forecast</p>
-              <h4 className="text-3xl font-bold text-slate-900 dark:text-white">${forecastAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</h4>
+              <h4 className="text-3xl font-bold text-slate-900 dark:text-white">{formatCurrency(forecastAmount)}</h4>
               <div className={`mt-2 flex items-center gap-1 text-sm font-medium ${forecastGrowth >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                 <TrendingUp className={`w-4 h-4 ${forecastGrowth < 0 ? 'rotate-180' : ''}`} />
                 {Math.abs(forecastGrowth).toFixed(1)}% vs last month
@@ -420,7 +530,7 @@ export default function Goals() {
                       <div className="w-full relative group flex-1 flex items-end">
                         <div className="w-full bg-blue-500 rounded-t-md transition-all hover:bg-blue-600" style={{ height }}></div>
                         <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs py-1 px-2 rounded whitespace-nowrap z-10 pointer-events-none">
-                          ${incomeByMonth[month].toLocaleString(undefined, {maximumFractionDigits: 0})}
+                          {formatCurrency(incomeByMonth[month])}
                         </div>
                       </div>
                       <span className="text-xs text-slate-500 dark:text-slate-400">{month.substring(5, 7)}/{month.substring(2, 4)}</span>
@@ -431,7 +541,7 @@ export default function Goals() {
                   <div className="w-full relative group flex-1 flex items-end">
                     <div className="w-full bg-emerald-400 rounded-t-md transition-all opacity-70 border border-dashed border-emerald-500 hover:opacity-90" style={{ height: `${(forecastAmount / (Math.max(...sortedMonths.slice(-6).map(m => incomeByMonth[m]), forecastAmount) || 1)) * 100}%` }}></div>
                     <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs py-1 px-2 rounded whitespace-nowrap z-10 pointer-events-none">
-                      ${forecastAmount.toLocaleString(undefined, {maximumFractionDigits: 0})}
+                      {formatCurrency(forecastAmount)}
                     </div>
                   </div>
                   <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">Next</span>

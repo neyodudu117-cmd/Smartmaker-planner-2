@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { GoogleGenAI } from '@google/genai';
 import { Sparkles, Loader2, ChevronRight, TrendingUp, AlertCircle, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useCurrency } from '../lib/currency';
 
 interface AIInsightsProps {
   data: {
@@ -18,6 +19,7 @@ interface AIInsightsProps {
 }
 
 export default function AIInsights({ data }: AIInsightsProps) {
+  const { currency, formatCurrency } = useCurrency();
   const [insights, setInsights] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,14 +39,16 @@ export default function AIInsights({ data }: AIInsightsProps) {
         3. Affiliate performance.
         4. A "Pro Tip" for scaling.
 
+        All amounts are in ${currency.name} (${currency.code}). Please use the ${currency.symbol} symbol in your response.
+
         Data:
-        - Total Revenue: $${data.summary.revenue}
-        - Total Expenses: $${data.summary.expenses}
-        - Net Profit: $${data.summary.netProfit}
-        - Affiliate Earnings: $${data.summary.affiliateEarnings}
-        - Top Affiliate Programs: ${data.affiliatePrograms.slice(0, 3).map(p => `${p.name} ($${p.commissions})`).join(', ')}
+        - Total Revenue: ${formatCurrency(data.summary.revenue)}
+        - Total Expenses: ${formatCurrency(data.summary.expenses)}
+        - Net Profit: ${formatCurrency(data.summary.netProfit)}
+        - Affiliate Earnings: ${formatCurrency(data.summary.affiliateEarnings)}
+        - Top Affiliate Programs: ${data.affiliatePrograms.slice(0, 3).map(p => `${p.name} (${formatCurrency(p.commissions)})`).join(', ')}
         - Top Products: ${data.digitalProducts.slice(0, 3).map(p => `${p.name} (${p.sales} sales)`).join(', ')}
-        - Recent Transactions: ${data.transactions.slice(0, 5).map(t => `${t.date}: ${t.description} ($${t.amount})`).join(', ')}
+        - Recent Transactions: ${data.transactions.slice(0, 5).map(t => `${t.date}: ${t.description} (${formatCurrency(t.amount)})`).join(', ')}
 
         Format the response as a JSON array of objects with "type" (one of: 'growth', 'warning', 'tip'), "title", and "description".
       `;

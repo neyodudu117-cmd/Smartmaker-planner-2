@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag, DollarSign, Percent, TrendingUp } from 'lucide-react';
 import { apiFetch } from '../lib/api';
+import { useCurrency } from '../lib/currency';
 
 export default function DigitalProducts() {
+  const { currency, formatCurrency } = useCurrency();
   const [products, setProducts] = useState<any[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [formData, setFormData] = useState({
@@ -93,7 +95,7 @@ export default function DigitalProducts() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Gross Revenue ($)</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Gross Revenue ({currency.symbol})</label>
               <input 
                 type="number" 
                 required
@@ -105,7 +107,7 @@ export default function DigitalProducts() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Platform Fees ($)</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Platform Fees ({currency.symbol})</label>
               <input 
                 type="number" 
                 required
@@ -151,7 +153,7 @@ export default function DigitalProducts() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Gross Revenue</p>
-              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">${totalGross.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{formatCurrency(totalGross)}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <DollarSign className="w-5 h-5" />
@@ -162,7 +164,7 @@ export default function DigitalProducts() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Platform Fees</p>
-              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">${totalFees.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{formatCurrency(totalFees)}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
               <Percent className="w-5 h-5" />
@@ -173,7 +175,7 @@ export default function DigitalProducts() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Net Revenue</p>
-              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">${totalNet.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{formatCurrency(totalNet)}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <TrendingUp className="w-5 h-5" />
@@ -207,13 +209,13 @@ export default function DigitalProducts() {
                     <td className="px-6 py-4 font-medium text-slate-900 dark:text-white transition-colors">{p.name}</td>
                     <td className="px-6 py-4 text-right text-slate-600 dark:text-slate-400 transition-colors">{p.sales.toLocaleString()}</td>
                     <td className="px-6 py-4 text-right text-slate-600 dark:text-slate-400 transition-colors">
-                      ${p.gross_revenue.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                      {formatCurrency(p.gross_revenue)}
                     </td>
                     <td className="px-6 py-4 text-right text-red-500 dark:text-red-400 transition-colors">
-                      -${p.platform_fee.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                      -{formatCurrency(p.platform_fee)}
                     </td>
                     <td className="px-6 py-4 text-right font-medium text-emerald-600 dark:text-emerald-400 transition-colors">
-                      ${net.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                      {formatCurrency(net)}
                     </td>
                   </tr>
                 );

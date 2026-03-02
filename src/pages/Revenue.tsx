@@ -3,8 +3,10 @@ import { Plus, Filter, Search, Calendar, Trash2, Tag, CheckSquare, Square, Penci
 import { format, parseISO } from 'date-fns';
 import { apiFetch } from '../lib/api';
 import RevenueForecast from '../components/RevenueForecast';
+import { useCurrency } from '../lib/currency';
 
 export default function Revenue() {
+  const { currency, formatCurrency } = useCurrency();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,7 +25,9 @@ export default function Revenue() {
     amount: '',
     category: 'Affiliate',
     date: new Date().toISOString().split('T')[0],
-    description: ''
+    description: '',
+    is_recurring: false,
+    frequency: 'monthly'
   });
 
   useEffect(() => {
@@ -65,7 +69,9 @@ export default function Revenue() {
         amount: '',
         category: 'Affiliate',
         date: new Date().toISOString().split('T')[0],
-        description: ''
+        description: '',
+        is_recurring: false,
+        frequency: 'monthly'
       });
       // Refresh data
       apiFetch('/api/dashboard')
@@ -85,7 +91,9 @@ export default function Revenue() {
       amount: t.amount.toString(),
       category: t.category,
       date: t.date,
-      description: t.description
+      description: t.description,
+      is_recurring: t.is_recurring || false,
+      frequency: t.frequency || 'monthly'
     });
     setEditingId(t.id);
     setIsAdding(true);
@@ -240,7 +248,7 @@ export default function Revenue() {
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{editingId ? 'Edit Income Entry' : 'New Income Entry'}</h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Amount ($)</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Amount ({currency.symbol})</label>
               <input 
                 type="number" 
                 required
@@ -285,6 +293,29 @@ export default function Revenue() {
                 placeholder="e.g. Amazon Associates Oct"
               />
             </div>
+            <div className="flex items-center gap-4 mt-2">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <div 
+                  onClick={() => setFormData({...formData, is_recurring: !formData.is_recurring})}
+                  className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.is_recurring ? 'bg-blue-600 border-blue-600' : 'border-slate-300 dark:border-slate-600 group-hover:border-blue-400'}`}
+                >
+                  {formData.is_recurring && <CheckSquare className="w-4 h-4 text-white" />}
+                </div>
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Recurring Income</span>
+              </label>
+              
+              {formData.is_recurring && (
+                <select 
+                  value={formData.frequency}
+                  onChange={e => setFormData({...formData, frequency: e.target.value})}
+                  className="border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors"
+                >
+                  <option value="monthly">Monthly</option>
+                  <option value="quarterly">Quarterly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              )}
+            </div>
             <div className="md:col-span-2 flex justify-end gap-2 mt-2">
               <button 
                 type="button" 
@@ -314,7 +345,7 @@ export default function Revenue() {
               <div key={month} className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-between transition-colors duration-200">
                 <div>
                   <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">{format(parseISO(month + '-01'), 'MMMM yyyy')}</p>
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white">${monthlySummary[month].toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{formatCurrency(monthlySummary[month])}</h3>
                 </div>
                 <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
                   <Calendar className="w-5 h-5" />
@@ -561,14 +592,24 @@ export default function Revenue() {
                     />
                   </td>
                   <td className="px-6 py-4 text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-slate-200 transition-colors">{t.date}</td>
-                  <td className="px-6 py-4 font-medium text-slate-900 dark:text-white transition-colors">{t.description}</td>
+                  <td className="px-6 py-4 font-medium text-slate-900 dark:text-white transition-colors">
+                    <div className="flex flex-col">
+                      <span>{t.description}</span>
+                      {t.is_recurring && (
+                        <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                          <Sparkles className="w-2.5 h-2.5" />
+                          Recurring {t.frequency}
+                        </span>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-6 py-4">
                     <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 transition-colors">
                       {t.category}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right font-medium text-emerald-600 dark:text-emerald-400 transition-colors">
-                    +${t.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                    +{formatCurrency(t.amount)}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">

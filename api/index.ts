@@ -40,7 +40,7 @@ app.get('/api/dashboard', async (req, res) => {
   const userId = await getUserId(email);
   
   try {
-    const [
+    let [
       { data: transactions },
       { data: affiliatePrograms },
       { data: digitalProducts },
@@ -51,6 +51,57 @@ app.get('/api/dashboard', async (req, res) => {
       supabase.from('digital_products').select('*').eq('user_id', userId),
       supabase.from('goals').select('*').eq('user_id', userId)
     ]);
+
+    // Recurring logic: Check if any recurring transactions need to be populated
+    const now = new Date();
+    const recurringIncomes = (transactions || []).filter(t => t.type === 'income' && t.is_recurring);
+    
+    for (const recurring of recurringIncomes) {
+      let lastDate = new Date(recurring.date);
+      const frequency = recurring.frequency || 'monthly';
+      
+      // Find the latest transaction in this series
+      const series = (transactions || []).filter(t => t.description === recurring.description && t.amount === recurring.amount);
+      const latestInSeries = series.reduce((latest, current) => {
+        return new Date(current.date) > new Date(latest.date) ? current : latest;
+      }, recurring);
+      
+      lastDate = new Date(latestInSeries.date);
+      
+      let nextDate = new Date(lastDate);
+      if (frequency === 'monthly') nextDate.setMonth(nextDate.getMonth() + 1);
+      else if (frequency === 'quarterly') nextDate.setMonth(nextDate.getMonth() + 3);
+      else if (frequency === 'yearly') nextDate.setFullYear(nextDate.getFullYear() + 1);
+      
+      // If next date is in the past or today, create it
+      while (nextDate <= now) {
+        const newTransaction = {
+          user_id: userId,
+          type: 'income',
+          amount: recurring.amount,
+          category: recurring.category,
+          date: nextDate.toISOString().split('T')[0],
+          description: recurring.description,
+          is_recurring: true,
+          frequency: recurring.frequency
+        };
+        
+        const { data: created, error } = await supabase
+          .from('transactions')
+          .insert([newTransaction])
+          .select()
+          .single();
+          
+        if (!error && created) {
+          transactions?.push(created);
+        }
+        
+        // Move to next potential date
+        if (frequency === 'monthly') nextDate.setMonth(nextDate.getMonth() + 1);
+        else if (frequency === 'quarterly') nextDate.setMonth(nextDate.getMonth() + 3);
+        else if (frequency === 'yearly') nextDate.setFullYear(nextDate.getFullYear() + 1);
+      }
+    }
 
     let totalIncome = 0;
     let totalExpense = 0;
@@ -81,7 +132,7 @@ app.get('/api/dashboard', async (req, res) => {
 });
 
 app.post('/api/transactions', async (req, res) => {
-  const { type, amount, category, date, description, is_tax_deductible } = req.body;
+  const { type, amount, category, date, description, is_tax_deductible, is_recurring, frequency } = req.body;
   const email = req.headers['x-user-email'] as string;
   const userId = await getUserId(email);
   
@@ -94,7 +145,9 @@ app.post('/api/transactions', async (req, res) => {
       category, 
       date, 
       description, 
-      is_tax_deductible: is_tax_deductible ? true : false 
+      is_tax_deductible: is_tax_deductible ? true : false,
+      is_recurring: is_recurring ? true : false,
+      frequency: frequency || null
     }])
     .select();
     
@@ -196,13 +249,21 @@ app.put('/api/transactions/bulk-categorize', async (req, res) => {
 
 app.put('/api/transactions/:id', async (req, res) => {
   const { id } = req.params;
-  const { amount, category, date, description, is_tax_deductible } = req.body;
+  const { amount, category, date, description, is_tax_deductible, is_recurring, frequency } = req.body;
   const email = req.headers['x-user-email'] as string;
   const userId = await getUserId(email);
   
   const { error } = await supabase
     .from('transactions')
-    .update({ amount, category, date, description, is_tax_deductible: is_tax_deductible ? true : false })
+    .update({ 
+      amount, 
+      category, 
+      date, 
+      description, 
+      is_tax_deductible: is_tax_deductible ? true : false,
+      is_recurring: is_recurring ? true : false,
+      frequency: frequency || null
+    })
     .eq('id', id)
     .eq('user_id', userId);
     

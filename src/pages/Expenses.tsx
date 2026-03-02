@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Filter, Search, Receipt, ShieldCheck, Calendar, Download, Trash2, Tag, Pencil } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { apiFetch } from '../lib/api';
+import { useCurrency } from '../lib/currency';
 
 export default function Expenses() {
+  const { currency, formatCurrency } = useCurrency();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -247,7 +249,7 @@ export default function Expenses() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Expenses</p>
-              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">${totalExpenses.toLocaleString()}</h3>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{formatCurrency(totalExpenses)}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
               <Receipt className="w-5 h-5" />
@@ -258,7 +260,7 @@ export default function Expenses() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Tax Deductible</p>
-              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">${taxDeductible.toLocaleString()}</h3>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{formatCurrency(taxDeductible)}</h3>
             </div>
             <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <ShieldCheck className="w-5 h-5" />
@@ -272,7 +274,7 @@ export default function Expenses() {
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{editingId ? 'Edit Expense Entry' : 'New Expense Entry'}</h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Amount ($)</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Amount ({currency.symbol})</label>
               <input 
                 type="number" 
                 required
@@ -368,7 +370,7 @@ export default function Expenses() {
             <div key={month} className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-between transition-colors duration-200">
               <div>
                 <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">{format(parseISO(month + '-01'), 'MMMM yyyy')}</p>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">${monthlySummary[month].toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{formatCurrency(monthlySummary[month])}</h3>
               </div>
               <div className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
                 <Calendar className="w-5 h-5" />
@@ -552,7 +554,7 @@ export default function Expenses() {
                     )}
                   </td>
                   <td className="px-6 py-4 text-right font-medium text-red-600 dark:text-red-400 transition-colors">
-                    -${t.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                    -{formatCurrency(t.amount)}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <button 

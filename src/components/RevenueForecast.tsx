@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { GoogleGenAI } from '@google/genai';
 import { Sparkles, Loader2, TrendingUp, BarChart3, Info } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useCurrency } from '../lib/currency';
 
 interface RevenueForecastProps {
   transactions: any[];
 }
 
 export default function RevenueForecast({ transactions }: RevenueForecastProps) {
+  const { currency, formatCurrency } = useCurrency();
   const [forecast, setForecast] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -19,17 +21,27 @@ export default function RevenueForecast({ transactions }: RevenueForecastProps) 
       
       const revenueData = transactions
         .filter(t => t.type === 'income')
-        .map(t => ({ date: t.date, amount: t.amount, category: t.category }));
+        .map(t => ({ 
+          date: t.date, 
+          amount: t.amount, 
+          category: t.category,
+          is_recurring: t.is_recurring,
+          frequency: t.frequency
+        }));
 
       const prompt = `
         Analyze these income transactions and predict revenue for the next 3 months.
+        Some transactions are marked as recurring (monthly, quarterly, yearly).
+        
+        All amounts are in ${currency.name} (${currency.code}). Please use the ${currency.symbol} symbol in your response.
+
         Provide a JSON object with:
         - "prediction": a short text summary
         - "monthlyForecast": an array of 3 objects with "month" and "estimatedAmount"
         - "confidence": a percentage (0-100)
         - "keyDrivers": array of 2-3 strings
 
-        Data: ${JSON.stringify(revenueData.slice(-20))}
+        Data: ${JSON.stringify(revenueData.slice(-30))}
       `;
 
       const response = await ai.models.generateContent({
@@ -71,7 +83,7 @@ export default function RevenueForecast({ transactions }: RevenueForecastProps) 
               {forecast.monthlyForecast?.map((m: any, i: number) => (
                 <div key={i} className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10">
                   <p className="text-[10px] uppercase font-bold text-blue-200 tracking-wider mb-1">{m.month}</p>
-                  <p className="text-lg font-bold">${m.estimatedAmount.toLocaleString()}</p>
+                  <p className="text-lg font-bold">{formatCurrency(m.estimatedAmount)}</p>
                 </div>
               ))}
             </div>

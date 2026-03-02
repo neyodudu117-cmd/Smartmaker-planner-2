@@ -5,6 +5,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { supabase } from './lib/supabase';
 import { useTheme } from './lib/theme';
+import { CurrencyProvider, useCurrency, CURRENCIES } from './lib/currency';
 
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
@@ -25,6 +26,7 @@ function Sidebar({ user }: { user: any }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const { currency, setCurrency } = useCurrency();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -58,6 +60,27 @@ function Sidebar({ user }: { user: any }) {
           {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
         </button>
       </div>
+
+      <div className="px-6 mb-4">
+        <div className="relative group">
+          <select 
+            value={currency.code}
+            onChange={(e) => {
+              const found = CURRENCIES.find(c => c.code === e.target.value);
+              if (found) setCurrency(found);
+            }}
+            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer transition-all hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            {CURRENCIES.map(c => (
+              <option key={c.code} value={c.code}>{c.code} ({c.symbol})</option>
+            ))}
+          </select>
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-hover:text-slate-600 transition-colors">
+            <DollarSign className="w-3 h-3" />
+          </div>
+        </div>
+      </div>
+
       <nav className="flex-1 px-4 space-y-1">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
@@ -140,18 +163,20 @@ export default function App() {
   }
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/auth" element={session ? <Navigate to="/dashboard" replace /> : <Auth />} />
-        <Route path="/dashboard" element={<DashboardLayout user={session?.user}><Dashboard /></DashboardLayout>} />
-        <Route path="/dashboard/revenue" element={<DashboardLayout user={session?.user}><Revenue /></DashboardLayout>} />
-        <Route path="/dashboard/affiliate" element={<DashboardLayout user={session?.user}><Affiliate /></DashboardLayout>} />
-        <Route path="/dashboard/products" element={<DashboardLayout user={session?.user}><DigitalProducts /></DashboardLayout>} />
-        <Route path="/dashboard/expenses" element={<DashboardLayout user={session?.user}><Expenses /></DashboardLayout>} />
-        <Route path="/dashboard/reports" element={<DashboardLayout user={session?.user}><Reports /></DashboardLayout>} />
-        <Route path="/dashboard/goals" element={<DashboardLayout user={session?.user}><Goals /></DashboardLayout>} />
-      </Routes>
-    </Router>
+    <CurrencyProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/auth" element={session ? <Navigate to="/dashboard" replace /> : <Auth />} />
+          <Route path="/dashboard" element={<DashboardLayout user={session?.user}><Dashboard /></DashboardLayout>} />
+          <Route path="/dashboard/revenue" element={<DashboardLayout user={session?.user}><Revenue /></DashboardLayout>} />
+          <Route path="/dashboard/affiliate" element={<DashboardLayout user={session?.user}><Affiliate /></DashboardLayout>} />
+          <Route path="/dashboard/products" element={<DashboardLayout user={session?.user}><DigitalProducts /></DashboardLayout>} />
+          <Route path="/dashboard/expenses" element={<DashboardLayout user={session?.user}><Expenses /></DashboardLayout>} />
+          <Route path="/dashboard/reports" element={<DashboardLayout user={session?.user}><Reports /></DashboardLayout>} />
+          <Route path="/dashboard/goals" element={<DashboardLayout user={session?.user}><Goals /></DashboardLayout>} />
+        </Routes>
+      </Router>
+    </CurrencyProvider>
   );
 }

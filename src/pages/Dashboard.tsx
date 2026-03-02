@@ -4,11 +4,13 @@ import { TrendingUp, TrendingDown, DollarSign, Activity, Link as LinkIcon, Spark
 import { motion } from 'motion/react';
 import { apiFetch } from '../lib/api';
 import AIInsights from '../components/AIInsights';
+import { useCurrency } from '../lib/currency';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
 
 function CountUp({ value, prefix = '', suffix = '', decimals = 0 }: { value: number, prefix?: string, suffix?: string, decimals?: number }) {
   const [count, setCount] = useState(0);
+  const { currency } = useCurrency();
 
   useEffect(() => {
     let startTime: number | null = null;
@@ -39,12 +41,12 @@ function CountUp({ value, prefix = '', suffix = '', decimals = 0 }: { value: num
     };
   }, [value]);
 
-  return <>{prefix}{count.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}{suffix}</>;
+  return <>{prefix || currency.symbol}{count.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}{suffix}</>;
 }
 
 export default function Dashboard() {
   const [data, setData] = useState<any>(null);
-  const [currency, setCurrency] = useState<'USD' | 'EUR'>('USD');
+  const { currency } = useCurrency();
 
   useEffect(() => {
     apiFetch('/api/dashboard')
@@ -61,9 +63,8 @@ export default function Dashboard() {
 
   const { summary = { revenue: 0, expenses: 0, netProfit: 0, affiliateEarnings: 0 }, transactions = [], affiliatePrograms = [], digitalProducts = [] } = data;
 
-  const exchangeRate = 0.92; // 1 USD = 0.92 EUR
-  const formatValue = (val: number) => currency === 'EUR' ? val * exchangeRate : val;
-  const currencySymbol = currency === 'EUR' ? '€' : '$';
+  const formatValue = (val: number) => val;
+  const currencySymbol = currency.symbol;
 
   // Process data for charts
   const revenueByMonth = transactions
@@ -99,14 +100,6 @@ export default function Dashboard() {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Dashboard Overview</h2>
         <div className="flex items-center gap-4">
-          <select 
-            value={currency} 
-            onChange={(e) => setCurrency(e.target.value as 'USD' | 'EUR')}
-            className="text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer transition-colors"
-          >
-            <option value="USD">USD ($)</option>
-            <option value="EUR">EUR (€)</option>
-          </select>
           <div className="text-sm text-slate-500 dark:text-slate-400">Last updated: Just now</div>
         </div>
       </div>
