@@ -15,6 +15,7 @@ import Expenses from './pages/Expenses';
 import Reports from './pages/Reports';
 import Goals from './pages/Goals';
 import Auth from './pages/Auth';
+import FastAIAssistant from './components/FastAIAssistant';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -110,6 +111,7 @@ function DashboardLayout({ children, user }: { children: React.ReactNode, user: 
           {children}
         </div>
       </main>
+      <FastAIAssistant />
     </div>
   );
 }

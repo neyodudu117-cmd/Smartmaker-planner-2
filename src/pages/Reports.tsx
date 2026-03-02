@@ -81,6 +81,14 @@ export default function Reports() {
   const expensesChange = calculatePercentageChange(totalExpenses, prevTotalExpenses);
   const profitChange = calculatePercentageChange(netProfit, prevNetProfit);
 
+  const largestIncomeCategory = Object.keys(incomeByCategory).length > 0 
+    ? Object.keys(incomeByCategory).reduce((a, b) => incomeByCategory[a] > incomeByCategory[b] ? a : b) 
+    : null;
+
+  const largestExpenseCategory = Object.keys(expensesByCategory).length > 0
+    ? Object.keys(expensesByCategory).reduce((a, b) => expensesByCategory[a] > expensesByCategory[b] ? a : b)
+    : null;
+
   // Calculate monthly summaries
   const monthlySummaries = filteredTransactions.reduce((acc: any, t: any) => {
     const month = t.date.substring(0, 7); // YYYY-MM
@@ -286,12 +294,14 @@ export default function Reports() {
           <div>
             <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 border-b border-slate-100 dark:border-slate-800 pb-2 transition-colors duration-200">Income</h4>
             <div className="space-y-3">
-              {Object.keys(incomeByCategory).map(category => (
-                <div key={category} className="flex justify-between items-center text-sm">
-                  <span className="text-slate-600 dark:text-slate-400 transition-colors">{category}</span>
-                  <span className="font-medium text-slate-900 dark:text-white transition-colors">${incomeByCategory[category].toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+              {Object.keys(incomeByCategory).map(category => {
+                const isLargest = category === largestIncomeCategory && incomeByCategory[category] > 0;
+                return (
+                <div key={category} className={`flex justify-between items-center text-sm ${isLargest ? 'font-bold text-emerald-600 dark:text-emerald-400' : ''}`}>
+                  <span className={isLargest ? '' : 'text-slate-600 dark:text-slate-400 transition-colors'}>{category}</span>
+                  <span className={isLargest ? '' : 'font-medium text-slate-900 dark:text-white transition-colors'}>${incomeByCategory[category].toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 </div>
-              ))}
+              )})}
               <div className="flex justify-between items-center text-sm font-bold pt-3 border-t border-slate-100 dark:border-slate-800 transition-colors duration-200">
                 <span className="text-slate-900 dark:text-white">Total Income</span>
                 <span className="text-emerald-600 dark:text-emerald-400">${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
@@ -303,12 +313,14 @@ export default function Reports() {
           <div>
             <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 border-b border-slate-100 dark:border-slate-800 pb-2 transition-colors duration-200">Expenses</h4>
             <div className="space-y-3">
-              {Object.keys(expensesByCategory).map(category => (
-                <div key={category} className="flex justify-between items-center text-sm">
-                  <span className="text-slate-600 dark:text-slate-400 transition-colors">{category}</span>
-                  <span className="font-medium text-slate-900 dark:text-white transition-colors">${expensesByCategory[category].toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+              {Object.keys(expensesByCategory).map(category => {
+                const isLargest = category === largestExpenseCategory && expensesByCategory[category] > 0;
+                return (
+                <div key={category} className={`flex justify-between items-center text-sm ${isLargest ? 'font-bold text-red-600 dark:text-red-400' : ''}`}>
+                  <span className={isLargest ? '' : 'text-slate-600 dark:text-slate-400 transition-colors'}>{category}</span>
+                  <span className={isLargest ? '' : 'font-medium text-slate-900 dark:text-white transition-colors'}>${expensesByCategory[category].toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 </div>
-              ))}
+              )})}
               <div className="flex justify-between items-center text-sm font-bold pt-3 border-t border-slate-100 dark:border-slate-800 transition-colors duration-200">
                 <span className="text-slate-900 dark:text-white">Total Expenses</span>
                 <span className="text-red-600 dark:text-red-400">${totalExpenses.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
@@ -369,10 +381,10 @@ export default function Reports() {
                   formatter={(value: number) => [`$${value.toLocaleString()}`, 'Total Expense']}
                 />
                 <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={40}>
-                  {Object.entries(expensesByCategory).map((_, index) => (
+                  {Object.entries(expensesByCategory).map(([name, _], index) => (
                     <Cell 
                       key={`cell-${index}`} 
-                      fill={['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#64748b'][index % 6]} 
+                      fill={name === largestExpenseCategory ? '#ef4444' : '#94a3b8'} 
                     />
                   ))}
                 </Bar>

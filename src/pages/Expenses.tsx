@@ -317,25 +317,28 @@ export default function Expenses() {
                 placeholder="e.g. Vercel Hosting"
               />
             </div>
-            <div className="md:col-span-2 flex items-center gap-3 mt-2">
+            <div className="md:col-span-2 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-between mt-2 transition-colors">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${formData.is_tax_deductible ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-slate-900 dark:text-white">Tax Deductible</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Mark this expense for tax reporting</p>
+                </div>
+              </div>
               <button
                 type="button"
                 role="switch"
                 aria-checked={formData.is_tax_deductible}
                 onClick={() => setFormData({...formData, is_tax_deductible: !formData.is_tax_deductible})}
-                className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${formData.is_tax_deductible ? 'bg-blue-600' : 'bg-slate-200 dark:bg-slate-700'}`}
+                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${formData.is_tax_deductible ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}`}
               >
                 <span
                   aria-hidden="true"
-                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${formData.is_tax_deductible ? 'translate-x-4' : 'translate-x-0'}`}
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${formData.is_tax_deductible ? 'translate-x-5' : 'translate-x-0'}`}
                 />
               </button>
-              <label 
-                className="text-sm text-slate-700 dark:text-slate-300 cursor-pointer" 
-                onClick={() => setFormData({...formData, is_tax_deductible: !formData.is_tax_deductible})}
-              >
-                This expense is tax deductible
-              </label>
             </div>
             <div className="md:col-span-2 flex justify-end gap-2 mt-2">
               <button 
@@ -538,12 +541,14 @@ export default function Expenses() {
                   </td>
                   <td className="px-6 py-4 text-center">
                     {t.is_tax_deductible ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800/50 transition-colors">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800/50 transition-colors">
                         <ShieldCheck className="w-3 h-3" />
-                        Deductible
+                        Yes
                       </span>
                     ) : (
-                      <span className="text-slate-300 dark:text-slate-600 transition-colors">-</span>
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 transition-colors">
+                        No
+                      </span>
                     )}
                   </td>
                   <td className="px-6 py-4 text-right font-medium text-red-600 dark:text-red-400 transition-colors">

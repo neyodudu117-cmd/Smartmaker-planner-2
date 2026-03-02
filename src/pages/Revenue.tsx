@@ -341,6 +341,16 @@ export default function Revenue() {
                 className="pl-9 pr-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm transition-colors"
               />
             </div>
+            <select
+              value={filters.category}
+              onChange={(e) => setFilters({...filters, category: e.target.value})}
+              className="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm transition-colors"
+            >
+              <option value="">All Categories</option>
+              {Array.from(new Set(transactions.map(t => t.category))).map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
             {searchQuery && (
               <button 
                 onClick={() => setSearchQuery('')}
