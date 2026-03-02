@@ -17,6 +17,7 @@ import Reports from './pages/Reports';
 import Goals from './pages/Goals';
 import Auth from './pages/Auth';
 import FastAIAssistant from './components/FastAIAssistant';
+import InactivityLogout from './components/InactivityLogout';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -164,6 +165,7 @@ export default function App() {
 
   return (
     <CurrencyProvider>
+      {session && <InactivityLogout />}
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />
