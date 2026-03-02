@@ -378,9 +378,15 @@ export default function Reports() {
                     border: 'none', 
                     boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
                     fontSize: '12px',
-                    fontWeight: 'bold'
+                    fontWeight: 'bold',
+                    backgroundColor: 'white',
+                    color: '#1e293b'
                   }}
-                  formatter={(value: number) => [formatCurrency(value), 'Total Expense']}
+                  itemStyle={{ color: '#3b82f6' }}
+                  formatter={(value: number) => {
+                    const percentage = totalExpenses > 0 ? ((value / totalExpenses) * 100).toFixed(1) : '0';
+                    return [`${formatCurrency(value)} (${percentage}%)`, 'Amount'];
+                  }}
                 />
                 <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={40}>
                   {Object.entries(expensesByCategory).map(([name, _], index) => (
