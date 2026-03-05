@@ -1,60 +1,64 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
-const INACTIVITY_TIMEOUT = 20 * 60 * 1000; // 20 minutes in milliseconds
+const INACTIVITY_TIMEOUT = 20 * 60 * 1000; // 20 minutes
+const CHECK_INTERVAL = 60 * 1000; // Check every minute
 
 export default function InactivityLogout() {
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const resetTimer = () => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-    timerRef.current = setTimeout(logout, INACTIVITY_TIMEOUT);
+  const updateLastActivity = () => {
+    localStorage.setItem('lastActivity', Date.now().toString());
   };
 
-  const logout = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      console.log('User inactive for 20 minutes. Signing out...');
-      await supabase.auth.signOut();
-      window.location.href = '/';
+  const checkInactivity = async () => {
+    const lastActivity = parseInt(localStorage.getItem('lastActivity') || '0');
+    const now = Date.now();
+    
+    if (now - lastActivity >= INACTIVITY_TIMEOUT) {
+      if (location.pathname === '/auth') return;
+      
+      try {
+        await supabase.auth.signOut();
+        navigate('/auth');
+      } catch (error) {
+        console.error('Error signing out due to inactivity:', error);
+      }
     }
   };
 
   useEffect(() => {
-    // Events to track user activity
-    const events = [
-      'mousedown',
-      'mousemove',
-      'keypress',
-      'scroll',
-      'touchstart',
-      'click'
-    ];
+    // Only track activity if not on auth page
+    if (location.pathname === '/auth') return;
 
+    // Set initial activity if not set
+    if (!localStorage.getItem('lastActivity')) {
+      updateLastActivity();
+    }
+
+    const events = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
+    
     const handleActivity = () => {
-      resetTimer();
+      updateLastActivity();
     };
-
-    // Initialize timer
-    resetTimer();
 
     // Add event listeners
     events.forEach(event => {
       window.addEventListener(event, handleActivity);
     });
 
-    // Cleanup
+    // Check inactivity periodically
+    const interval = setInterval(checkInactivity, CHECK_INTERVAL);
+
     return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
+      clearInterval(interval);
       events.forEach(event => {
         window.removeEventListener(event, handleActivity);
       });
     };
-  }, []);
+  }, [location.pathname, navigate]);
 
-  return null; // This component doesn't render anything
+  return null;
 }

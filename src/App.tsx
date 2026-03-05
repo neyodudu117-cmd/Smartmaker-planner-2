@@ -6,6 +6,7 @@ import { twMerge } from 'tailwind-merge';
 import { supabase } from './lib/supabase';
 import { useTheme } from './lib/theme';
 import { CurrencyProvider, useCurrency, CURRENCIES } from './lib/currency';
+import { cn } from './lib/utils';
 
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
@@ -18,10 +19,6 @@ import Goals from './pages/Goals';
 import Auth from './pages/Auth';
 import FastAIAssistant from './components/FastAIAssistant';
 import InactivityLogout from './components/InactivityLogout';
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
 function Sidebar({ user }: { user: any }) {
   const location = useLocation();
@@ -165,8 +162,8 @@ export default function App() {
 
   return (
     <CurrencyProvider>
-      {session && <InactivityLogout />}
       <Router>
+        {session && <InactivityLogout />}
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/auth" element={session ? <Navigate to="/dashboard" replace /> : <Auth />} />

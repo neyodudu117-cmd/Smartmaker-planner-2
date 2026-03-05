@@ -67,7 +67,6 @@ export default function FastAIAssistant() {
     setIsLoading(true);
 
     try {
-      // @ts-ignore
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       
       const response = await ai.models.generateContentStream({

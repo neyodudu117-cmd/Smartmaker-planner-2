@@ -34,7 +34,7 @@ export const CURRENCIES: Currency[] = [
 interface CurrencyContextType {
   currency: Currency;
   setCurrency: (currency: Currency) => void;
-  formatCurrency: (amount: number) => string;
+  formatCurrency: (amount: number | string) => string;
 }
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);

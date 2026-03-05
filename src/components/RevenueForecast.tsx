@@ -3,6 +3,7 @@ import { GoogleGenAI } from '@google/genai';
 import { Sparkles, Loader2, TrendingUp, BarChart3, Info } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useCurrency } from '../lib/currency';
+import { parseAIJson } from '../lib/utils';
 
 interface RevenueForecastProps {
   transactions: any[];
@@ -16,7 +17,6 @@ export default function RevenueForecast({ transactions }: RevenueForecastProps) 
   const generateForecast = async () => {
     setIsGenerating(true);
     try {
-      // @ts-ignore
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       
       const revenueData = transactions
@@ -50,7 +50,7 @@ export default function RevenueForecast({ transactions }: RevenueForecastProps) 
         config: { responseMimeType: 'application/json' }
       });
 
-      setForecast(JSON.parse(response.text || '{}'));
+      setForecast(parseAIJson(response.text));
     } catch (err) {
       console.error(err);
     } finally {
