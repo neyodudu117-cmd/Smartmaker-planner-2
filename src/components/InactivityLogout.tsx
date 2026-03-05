@@ -33,10 +33,8 @@ export default function InactivityLogout() {
     // Only track activity if not on auth page
     if (location.pathname === '/auth') return;
 
-    // Set initial activity if not set
-    if (!localStorage.getItem('lastActivity')) {
-      updateLastActivity();
-    }
+    // Set initial activity on mount to prevent immediate logout from old sessions
+    updateLastActivity();
 
     const events = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
     

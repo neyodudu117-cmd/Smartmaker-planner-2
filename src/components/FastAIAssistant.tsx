@@ -103,7 +103,7 @@ export default function FastAIAssistant() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-6 right-6 z-50 pointer-events-none">
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -115,7 +115,7 @@ export default function FastAIAssistant() {
               height: isMinimized ? '64px' : '500px'
             }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-80 md:w-96 overflow-hidden flex flex-col transition-all duration-300"
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-80 md:w-96 overflow-hidden flex flex-col transition-all duration-300 pointer-events-auto"
           >
             {/* Header */}
             <div className="p-4 bg-blue-600 flex items-center justify-between text-white">
@@ -227,7 +227,7 @@ export default function FastAIAssistant() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
-          className="w-14 h-14 bg-blue-600 text-white rounded-full shadow-xl flex items-center justify-center hover:bg-blue-700 transition-colors group relative"
+          className="w-14 h-14 bg-blue-600 text-white rounded-full shadow-xl flex items-center justify-center hover:bg-blue-700 transition-colors group relative pointer-events-auto"
         >
           <motion.div
             animate={{ scale: [1, 1.1, 1] }}

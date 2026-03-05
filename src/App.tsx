@@ -142,18 +142,43 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
+
+    // Create a timeout to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      if (mounted && loading) {
+        console.warn('Session check timed out, defaulting to no session');
+        setLoading(false);
+      }
+    }, 5000); // 5 second timeout
+
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
+      if (mounted) {
+        setSession(session);
+        setLoading(false);
+        clearTimeout(timeoutId);
+      }
+    }).catch(err => {
+      console.error('Session check failed:', err);
+      if (mounted) {
+        setLoading(false);
+        clearTimeout(timeoutId);
+      }
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+      if (mounted) {
+        setSession(session);
+      }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      clearTimeout(timeoutId);
+      subscription.unsubscribe();
+    };
   }, []);
 
   if (loading) {
